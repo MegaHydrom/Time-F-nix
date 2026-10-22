@@ -385,6 +385,22 @@ img.av{display:block;object-fit:cover;padding:0}
 [data-tipo="alteracao"]{--cor:var(--accent)}
 [data-tipo="demanda"]{--cor:var(--pausado)}
 [data-tipo="demanda"].concluida{--cor:var(--ativo)}
+[data-tipo="status"]{--cor:var(--ev-azul)}
+[data-sads="ativo"]{--sads:#16A34A;--sads-txt:#FFFFFF}
+[data-sads="pausado"]{--sads:#EAB308;--sads-txt:#1F1600}
+[data-sads="nao_comecou"]{--sads:#DC2626;--sads-txt:#FFFFFF}
+[data-sads="nao_tem"]{--sads:#111111;--sads-txt:#FFFFFF}
+[data-sads="sem"]{--sads:var(--line);--sads-txt:var(--muted)}
+.sads-pill{display:inline-flex;align-items:center;font-size:12.5px;font-weight:700;padding:3px 10px;border-radius:999px;background:var(--sads);color:var(--sads-txt);white-space:nowrap;box-shadow:inset 0 0 0 1px rgba(127,127,127,.25)}
+.sads-rot{font-size:13px;font-weight:500;color:var(--muted)}
+.sads-escolha{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.sads-escolha button{border:1.5px solid var(--line);background:var(--surface-2);border-radius:10px;padding:8px 6px;font-weight:600;font-size:13.5px;cursor:pointer;display:flex;gap:7px;align-items:center;justify-content:center;color:var(--ink)}
+.sads-escolha button::before{content:"";width:10px;height:10px;border-radius:50%;background:var(--sads);flex:none;box-shadow:inset 0 0 0 1px rgba(127,127,127,.3)}
+.sads-escolha button:hover{border-color:var(--sads)}
+.sads-escolha button[aria-checked="true"]{background:var(--sads);border-color:var(--sads);color:var(--sads-txt)}
+.sads-escolha button[aria-checked="true"]::before{background:var(--sads-txt)}
+.sel-dir{display:flex;gap:10px;align-items:center}
+@media (max-width:780px){ .sads-escolha{grid-template-columns:repeat(2,minmax(0,1fr))} }
 .meta{color:var(--muted);font-size:13px}
 label.check{display:inline-flex;gap:8px;align-items:center;font-size:13.5px;color:var(--ink);font-weight:500;cursor:pointer}
 .check input{width:auto;accent-color:var(--accent);margin:0}
@@ -729,6 +745,7 @@ button.cal-dia.alt:hover{background:var(--accent);filter:brightness(1.1)}
           <p>Contexto, alterações, demandas e resultados de cada cliente.</p>
         </div>
         <div class="dash-ctrl">
+          <button class="btn" type="button" id="btn-visao-ads" aria-haspopup="dialog">Status das contas</button>
           <button class="btn seletor-cli" type="button" id="btn-sel-cli" aria-haspopup="dialog">
             <span><strong id="ads-cliente-nome">Escolher cliente</strong><small id="ads-cliente-sub">Clique para ver a lista de clientes</small></span>
             <span class="seta" aria-hidden="true">▾</span>
@@ -900,6 +917,19 @@ button.cal-dia.alt:hover{background:var(--accent);filter:brightness(1.1)}
   <aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="d-titulo"></aside>
 </div>
 
+<dialog id="modal-sads" class="modal modal-largo" aria-labelledby="sads-titulo">
+  <div class="modal-corpo">
+    <div class="bloco-cab"><h2 id="sads-titulo">Status de Ads das contas</h2><button class="fechar" type="button" id="sads-fechar" aria-label="Fechar">×</button></div>
+    <div class="ferramentas" style="margin:0" id="sads-filtros"></div>
+    <div class="ferramentas" style="margin:0">
+      <input class="busca" id="sads-busca" type="search" placeholder="Buscar cliente" aria-label="Buscar cliente" style="margin-left:0;flex:1;max-width:none">
+      <label class="check"><input type="checkbox" id="sads-saiu">Incluir clientes que saíram</label>
+    </div>
+    <div id="sads-lista" class="sel-lista"></div>
+    <p class="meta">Clique num cliente para abrir a aba Ads dele.</p>
+  </div>
+</dialog>
+
 <dialog id="modal-clientes" class="modal modal-largo" aria-labelledby="mc-titulo">
   <div class="modal-corpo">
     <div class="bloco-cab"><h2 id="mc-titulo">Escolher cliente</h2><button class="fechar" type="button" id="mc-fechar" aria-label="Fechar">×</button></div>
@@ -1034,7 +1064,7 @@ const fmtDataHora = ts => new Date(ts).toLocaleString('pt-BR', { day:'2-digit', 
 const iniciais = nome => (nome || '?').trim().split(/\s+/).slice(0,2).map(p => p[0]).join('').toUpperCase();
 
 let sb;
-const state = { eu:null, colaboradores:[], clientes:[], problemas:[], chamados:[], filtro:'todos', busca:'', filtroCham:'pendentes', buscaCham:'', view:'clientes', aberto:null, problemaAberto:null, statusEscolhido:null, metricas:[], importacao:null, adsCliente:null, adsBusca:'', adsMostrarSaiu:false, adsFiltro:'todos', adsTipo:'alteracao', adsSituacao:new Map(), adsRegistros:[], editandoReg:null, listings:[], listingEventos:[], config:new Map(), filtroList:'abertos', buscaList:'', listingAberto:null, dev:null, verComo:null, dashEscopo:'minhas', adsDia:null, adsMes:hoje().slice(0,7), selFiltro:'ativos', selBusca:'', promocoes:[], eventos:[], eventoClientes:[], eventoSel:null, fPromo:'andamento', buscaPromo:'', promoEditando:null, promoTipo:null, fEv:'todas', buscaEv:'', eventoEditando:null, chamadoAberto:null, fProb:'abertos', buscaProb:'', gravProb:'' };
+const state = { eu:null, colaboradores:[], clientes:[], problemas:[], chamados:[], filtro:'todos', busca:'', filtroCham:'pendentes', buscaCham:'', view:'clientes', aberto:null, problemaAberto:null, statusEscolhido:null, metricas:[], importacao:null, adsCliente:null, adsBusca:'', adsMostrarSaiu:false, adsFiltro:'todos', adsTipo:'alteracao', adsSituacao:new Map(), adsRegistros:[], editandoReg:null, listings:[], listingEventos:[], config:new Map(), filtroList:'abertos', buscaList:'', listingAberto:null, dev:null, verComo:null, dashEscopo:'minhas', adsDia:null, adsMes:hoje().slice(0,7), selFiltro:'ativos', selBusca:'', promocoes:[], eventos:[], eventoClientes:[], eventoSel:null, fPromo:'andamento', buscaPromo:'', promoEditando:null, promoTipo:null, fEv:'todas', buscaEv:'', eventoEditando:null, chamadoAberto:null, sadsFiltro:'todos', sadsBusca:'', sadsSaiu:false, fProb:'abertos', buscaProb:'', gravProb:'' };
 const colab = id => state.colaboradores.find(c => c.id === id);
 const souHead = () => state.eu?.funcao === 'head';
 
@@ -1793,7 +1823,7 @@ async function importar(){
 }
 
 // ---------- aba Ads ----------
-const TIPO_REG = { alteracao:'Alteração realizada', demanda:'Demanda' };
+const TIPO_REG = { alteracao:'Alteração realizada', demanda:'Demanda', status:'Mudança de status' };
 const fmtCurto = n => n == null ? '–' : Number(n).toLocaleString('pt-BR', { style:'currency', currency:'BRL', notation:'compact', maximumFractionDigits:1 });
 function fmtDiaLongo(d){
   const [a, m, dd] = d.split('-').map(Number);
@@ -1839,7 +1869,7 @@ function renderSeletor(){
     const t = tendencia(c.id), pend = demandasPendentes(c.id);
     return `<button type="button" class="sel-item" data-status="${c.status}" aria-current="${c.id === state.adsCliente}" onclick="selecionarAds('${c.id}')">
       <span><strong>${esc(c.nome)}</strong><small>${STATUS[c.status]}${pend ? `, ${pend} ${pend === 1 ? 'demanda pendente' : 'demandas pendentes'}` : ''}</small></span>
-      ${t ? `<span class="tend" data-tend="${t.tipo}" title="${TEND[t.tipo]} há ${plMeses(t.meses)}">${SETA[t.tipo]} ${plMeses(t.meses)}</span>` : ''}
+      <span class="sel-dir">${t ? `<span class="tend" data-tend="${t.tipo}" title="${TEND[t.tipo]} há ${plMeses(t.meses)}">${SETA[t.tipo]} ${plMeses(t.meses)}</span>` : ''}${pillAds(statusAdsDe(c.id))}</span>
     </button>`;
   }).join('') : `<p class="ajuda" style="padding:14px">Nenhum cliente ${state.selFiltro === 'ativos' ? 'ativo' : 'desativado'} encontrado.</p>`;
 }
@@ -1884,7 +1914,10 @@ function renderAdsArea(){
   area.innerHTML = `
   <div class="ads-board" data-board="ads">
     <section class="painel widget w-largo" data-widget="contexto">${ALCA}
-      <div class="bloco-cab"><h3>Contexto geral</h3><span class="meta" id="sit-meta"></span></div>
+      <div class="bloco-cab"><h3>Status e contexto geral</h3><span class="meta" id="sit-meta"></span></div>
+      <span class="sads-rot">Status de Ads</span>
+      <div class="sads-escolha" role="radiogroup" aria-label="Status de Ads">${Object.entries(STATUS_ADS).map(([k, v]) => `<button type="button" role="radio" data-sads="${k}" aria-checked="${sit?.status_ads === k}" onclick="definirStatusAds('${k}')">${v}</button>`).join('')}</div>
+      <span class="sads-rot">Contexto geral</span>
       <textarea id="sit-texto" rows="5" aria-label="Contexto geral da conta em Ads" placeholder="Como está a conta em Ads agora: estratégia, campanhas em foco, pontos de atenção">${esc(sit?.texto)}</textarea>
       <div class="acoes"><span class="meta" id="sit-sujo" hidden style="align-self:center">Alterações não salvas</span><button class="btn primario" type="button" id="btn-sit">Salvar contexto</button></div>
     </section>
@@ -1960,7 +1993,7 @@ function renderCalendario(){
   const vazios = (new Date(a, m - 1, 1).getDay() + 6) % 7;   // semana começa na segunda
   const regs = state.adsRegistros.filter(r => r.cliente_id === state.adsCliente && r.data.startsWith(state.adsMes));
   const marca = new Map();
-  regs.forEach(r => { const d = +r.data.slice(8, 10); const o = marca.get(d) || { alt:0, dem:0 }; if (r.tipo === 'alteracao') o.alt++; else o.dem++; marca.set(d, o); });
+  regs.forEach(r => { const d = +r.data.slice(8, 10); const o = marca.get(d) || { alt:0, dem:0 }; if (r.tipo === 'demanda') o.dem++; else o.alt++; marca.set(d, o); });
   const hj = hoje();
   const nm = new Date(a, m - 1, 1).toLocaleDateString('pt-BR', { month:'long', year:'numeric' });
   const nomeMes = nm.charAt(0).toUpperCase() + nm.slice(1);
@@ -2075,7 +2108,7 @@ function regHTML(r){
   if (state.editandoReg === r.id) return `
     <article class="reg" data-tipo="${r.tipo}">
       <div class="dupla">
-        <label>Tipo<select id="er-tipo">${opcoesDe(TIPO_REG, r.tipo)}</select></label>
+        <label>Tipo<select id="er-tipo">${opcoesDe({ alteracao:TIPO_REG.alteracao, demanda:TIPO_REG.demanda }, r.tipo)}</select></label>
         <label>Data<input type="date" id="er-data" value="${r.data}"></label>
       </div>
       <label>Texto<textarea id="er-texto" rows="3">${esc(r.texto)}</textarea></label>
@@ -2094,7 +2127,7 @@ function regHTML(r){
     <p class="reg-texto">${esc(r.texto)}</p>
     <div class="reg-rodape">
       <small>${autor ? esc(autor.nome) : 'Colaborador removido'}, ${fmtDataHora(r.criado_em)}${demanda && r.concluida && r.concluida_em ? `. Concluída em ${fmtDia(r.concluida_em)}` : ''}</small>
-      ${pode ? `<span class="reg-acoes"><button class="link" type="button" onclick="state.editandoReg='${r.id}';renderTimeline()">Editar</button><button class="link perigo-txt" type="button" onclick="excluirRegistro('${r.id}')">Excluir</button></span>` : ''}
+      ${pode ? `<span class="reg-acoes">${r.tipo === 'status' ? '' : `<button class="link" type="button" onclick="state.editandoReg='${r.id}';renderTimeline()">Editar</button>`}<button class="link perigo-txt" type="button" onclick="excluirRegistro('${r.id}')">Excluir</button></span>` : ''}
     </div>
   </article>`;
 }
@@ -2111,7 +2144,7 @@ function renderTimeline(){
   document.querySelectorAll('[data-fads]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.fads === f)));
   const regs = state.adsRegistros
     .filter(r => r.cliente_id === state.adsCliente)
-    .filter(r => f === 'todos' || (f === 'alteracao' ? r.tipo === 'alteracao' : r.tipo === 'demanda' && !r.concluida))
+    .filter(r => f === 'todos' || (f === 'alteracao' ? r.tipo !== 'demanda' : r.tipo === 'demanda' && !r.concluida))
     .filter(r => !state.adsDia || r.data === state.adsDia)
     .sort((a,b) => a.data < b.data ? 1 : a.data > b.data ? -1 : new Date(b.criado_em) - new Date(a.criado_em));
   if (!regs.length){
@@ -3534,6 +3567,56 @@ async function salvarPerfil({ nome, foto, status }, msg = 'Perfil salvo'){
   if (c){ c.nome = novoNome; c.foto_url = novaFoto; c.status_frase = novoStatus; }
   mostrarEuNoMenu(); renderPerfil();
   toast(msg);
+}
+
+// ---------- status de Ads ----------
+const STATUS_ADS = { ativo:'Ativo', pausado:'Pausado', nao_comecou:'Não começou', nao_tem:'Não tem' };
+const statusAdsDe = cid => state.adsSituacao.get(cid)?.status_ads || null;
+const pillAds = s => `<span class="sads-pill" data-sads="${s || 'sem'}">${s ? STATUS_ADS[s] : 'Sem status'}</span>`;
+
+async function definirStatusAds(s){
+  const cid = state.adsCliente;
+  if (!cid || statusAdsDe(cid) === s) return;
+  document.querySelectorAll('.sads-escolha button').forEach(b => b.disabled = true);
+  const { data, error } = await sb.from('ads_situacao').upsert({ cliente_id:cid, status_ads:s }, { onConflict:'cliente_id' }).select().single();
+  document.querySelectorAll('.sads-escolha button').forEach(b => b.disabled = false);
+  if (error){ toast('Não foi possível mudar o status: ' + error.message, true); return; }
+  state.adsSituacao.set(cid, data);
+  const regs = await sb.from('ads_registros').select('*').eq('cliente_id', cid);
+  if (!regs.error) state.adsRegistros = state.adsRegistros.filter(r => r.cliente_id !== cid).concat(regs.data);
+  document.querySelectorAll('.sads-escolha button').forEach(b => b.setAttribute('aria-checked', String(b.dataset.sads === s)));
+  renderSitMeta(); renderTimeline(); renderAdsLista();
+  if ($('#modal-sads').open) renderVisaoAds();
+  toast(`Status de Ads: ${STATUS_ADS[s]}. Registrado na timeline.`);
+}
+
+// visão geral de todas as contas
+$('#btn-visao-ads').addEventListener('click', () => { state.sadsBusca = ''; $('#sads-busca').value = ''; renderVisaoAds(); $('#modal-sads').showModal(); });
+$('#sads-fechar').addEventListener('click', () => $('#modal-sads').close());
+$('#modal-sads').addEventListener('click', e => { if (e.target === e.currentTarget) e.currentTarget.close(); });
+$('#sads-busca').addEventListener('input', e => { state.sadsBusca = e.target.value; renderVisaoAds(); });
+$('#sads-saiu').addEventListener('change', e => { state.sadsSaiu = e.target.checked; renderVisaoAds(); });
+
+function renderVisaoAds(){
+  const base = state.clientes.filter(c => state.sadsSaiu || c.status !== 'saiu');
+  const cont = { todos:base.length, ativo:0, pausado:0, nao_comecou:0, nao_tem:0, sem:0 };
+  base.forEach(c => cont[statusAdsDe(c.id) || 'sem']++);
+  const f = state.sadsFiltro, q = norm(state.sadsBusca);
+  $('#sads-filtros').innerHTML = [['todos','Todos'], ...Object.entries(STATUS_ADS), ['sem','Sem status']].map(([k, v]) =>
+    `<button class="filtro" type="button" data-fsads="${k}" ${k === 'todos' ? 'data-estado="todos"' : `data-sads="${k}" style="--cor:var(--sads)"`} aria-pressed="${k === f}">${k === 'todos' ? '' : '<span class="ponto"></span>'}${v} <span class="n">${cont[k]}</span></button>`).join('');
+  $('#sads-filtros').querySelectorAll('[data-fsads]').forEach(b => b.addEventListener('click', () => { state.sadsFiltro = b.dataset.fsads; renderVisaoAds(); }));
+  const ordem = { ativo:0, pausado:1, nao_comecou:2, nao_tem:3, sem:4 };
+  const lista = base
+    .filter(c => f === 'todos' || (statusAdsDe(c.id) || 'sem') === f)
+    .filter(c => !q || norm(c.nome + ' ' + (c.loja || '')).includes(q))
+    .sort((a,b) => ordem[statusAdsDe(a.id) || 'sem'] - ordem[statusAdsDe(b.id) || 'sem'] || a.nome.localeCompare(b.nome, 'pt-BR'));
+  $('#sads-lista').innerHTML = lista.length ? lista.map(c => {
+    const sit = state.adsSituacao.get(c.id);
+    return `<button type="button" class="sel-item" data-sads="${sit?.status_ads || 'sem'}" style="--cor:var(--sads)" onclick="$('#modal-sads').close();irParaAds('${c.id}')">
+      <span><strong>${esc(c.nome)}</strong><small>Cliente ${STATUS[c.status].toLowerCase()}${sit?.status_ads ? `, status atualizado em ${fmtDia(sit.atualizado_em)}` : ''}</small></span>
+      ${pillAds(sit?.status_ads)}
+    </button>`;
+  }).join('') : `<p class="ajuda" style="padding:14px">Nenhum cliente com esse filtro.</p>`;
 }
 
 // ---------- aba de chamados ----------
