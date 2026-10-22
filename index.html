@@ -143,7 +143,8 @@ h1,h2,h3,p{margin:0}
 code{background:var(--surface-2);border:1px solid var(--line);border-radius:5px;padding:1px 5px;font-size:13px}
 
 /* campos */
-label{display:grid;gap:6px;font-size:13px;font-weight:500;color:var(--muted)}
+label{display:block;font-size:13px;font-weight:500;color:var(--muted)}
+label > input,label > select,label > textarea{display:block;margin-top:6px}
 input,select,textarea{background:var(--surface-2);border:1px solid var(--line);border-radius:8px;padding:9px 11px;font-size:15px;color:var(--ink);width:100%}
 textarea{resize:vertical}
 input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
@@ -198,6 +199,20 @@ nav{display:grid;gap:2px}
 .l-equipe{display:flex;gap:4px}
 .av{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-size:11px;font-weight:700;background:var(--accent-soft);color:var(--accent)}
 .av.sem{background:none;border:1px dashed var(--line);color:var(--muted)}
+img.av{display:block;object-fit:cover;padding:0}
+.eu-topo{display:flex;align-items:center;gap:10px;min-width:0}
+.eu-topo .av{width:36px;height:36px;font-size:13px;flex:none}
+.eu-topo > div{min-width:0}
+.perfil{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.perfil-foto .av{width:76px;height:76px;font-size:24px}
+.perfil-acoes{display:grid;gap:6px;justify-items:start}
+.multi{display:grid;gap:6px}
+.multi-linha{display:flex;gap:6px}
+.multi-linha input{flex:1;min-width:0}
+.multi-tirar{background:none;border:1px solid var(--line);border-radius:8px;width:38px;flex:none;cursor:pointer;color:var(--muted);font-size:18px;line-height:1}
+.multi-tirar:hover{color:var(--danger);border-color:var(--danger)}
+.campo .link{justify-self:start}
+.ch-extra{color:var(--muted);font-size:12.5px}
 .l-data{font-variant-numeric:tabular-nums;color:var(--muted);font-size:14px}
 .tend{font-weight:600;color:var(--cor);font-size:13.5px;white-space:nowrap}
 .tag{display:inline-flex;align-items:center;font-size:12.5px;font-weight:600;color:var(--cor);border:1px solid var(--cor);border-radius:999px;padding:1px 9px;white-space:nowrap}
@@ -660,7 +675,7 @@ button.cal-dia.alt:hover{background:var(--accent);filter:brightness(1.1)}
       <button class="nav-item" data-view="config">Configurações</button>
     </nav>
     <div class="eu">
-      <div><strong id="eu-nome"></strong><small id="eu-funcao"></small><span class="dev-badge" id="dev-badge" hidden>Modo dev</span></div>
+      <div class="eu-topo"><span id="eu-foto"></span><div><strong id="eu-nome"></strong><small id="eu-funcao"></small><span class="dev-badge" id="dev-badge" hidden>Modo dev</span></div></div>
       <div class="eu-acoes">
         <button class="btn pequeno" type="button" id="btn-tema" aria-label="Alternar tema claro ou escuro">Tema</button>
         <button class="btn pequeno" type="button" data-sair>Sair</button>
@@ -742,6 +757,7 @@ button.cal-dia.alt:hover{background:var(--accent);filter:brightness(1.1)}
         </div>
       </div>
       <div class="config-grade">
+      <div class="painel" id="painel-perfil"></div>
       <div class="painel">
         <h3>Aparência</h3>
         <p class="ajuda">Vale só para este navegador. Claro ou escuro continua no botão Tema, no menu.</p>
@@ -933,6 +949,9 @@ button.cal-dia.alt:hover{background:var(--accent);filter:brightness(1.1)}
     <h2 id="mch-titulo">Novo chamado</h2>
     <label>Cliente<select id="mch-cliente"></select></label>
     <label>Data do chamado<input id="mch-data" type="date" style="max-width:200px"></label>
+    <label>ID do chamado <span class="opc">(opcional)</span><input id="mch-idch" placeholder="Ex.: 1234567890"></label>
+    <div class="campo"><span class="rotulo">Códigos de produto <span class="opc">(opcional)</span></span><div id="mch-produtos-box"></div></div>
+    <div class="campo"><span class="rotulo">E-mails de retorno <span class="opc">(opcional)</span></span><div id="mch-emails-box"></div></div>
     <p class="meta">Depois de criar, dá para ligar o chamado a um problema do cliente e completar os outros dados.</p>
     <p id="mch-erro" class="erro-txt" role="alert"></p>
     <div class="acoes">
@@ -1054,8 +1073,7 @@ async function entrarComSessao(sessao){
   state.eu = data;
   if (!data.ativo){ $('#pendente-msg').textContent = 'Seu acesso à carteira foi removido. Fale com o HEAD para liberar de novo.'; mostrar('tela-pendente'); return; }
   if (!data.funcao){ $('#pendente-msg').textContent = 'Sua conta está sem função definida. Fale com o HEAD para definir.'; mostrar('tela-pendente'); return; }
-  $('#eu-nome').textContent = data.nome;
-  $('#eu-funcao').textContent = FUNCOES[data.funcao];
+  mostrarEuNoMenu();
   atualizarNav();
   aplicarOrdemNav();
   mostrar('app');
@@ -1119,7 +1137,7 @@ $('#btn-verificar').addEventListener('click', async () => {
 // ---------- dados ----------
 async function carregarDados(){
   const [c, k, p, ch] = await Promise.all([
-    sb.from('colaboradores').select('id,nome,email,funcao,ativo,criado_em').order('nome'),
+    sb.from('colaboradores').select('id,nome,email,funcao,ativo,criado_em,foto_url').order('nome'),
     sb.from('clientes').select('*').order('nome'),
     sb.from('problemas').select('*').order('criado_em', { ascending:false }),
     sb.from('chamados').select('*').order('criado_em', { ascending:false }),
@@ -1219,7 +1237,7 @@ function renderClientes(){
       <span class="l-prob">${resumoProblemas(c.id)}</span>
       <span class="l-equipe">${RESP.map(r => {
         const p = colab(c[r.campo]);
-        return p ? `<span class="av" title="${esc(r.rotulo + ': ' + p.nome)}">${esc(iniciais(p.nome))}</span>`
+        return p ? avatar(p, `title="${esc(r.rotulo + ': ' + p.nome)}"`)
                  : `<span class="av sem" title="${esc(r.rotulo)}: sem responsável">–</span>`;
       }).join('')}</span>
     </button>`).join('');
@@ -2136,6 +2154,7 @@ const linkPadrao = () => state.config.get('planilha_catalogacao_padrao')?.valor 
 const linkSeguro = u => /^https?:\/\//i.test(String(u || '').trim()) ? String(u).trim() : null;
 
 function renderConfig(){
+  renderPerfil();
   const v = document.documentElement.dataset.visual || 'atual';
   document.querySelectorAll('.visual').forEach(b => b.setAttribute('aria-checked', String(b.dataset.v === v)));
   renderDev();
@@ -2572,8 +2591,7 @@ async function atualizarEu(){
   const { data } = await sb.from('colaboradores').select('*').eq('id', state.eu.id).single();
   if (!data) return;
   state.eu = data;
-  $('#eu-nome').textContent = data.nome;
-  $('#eu-funcao').textContent = FUNCOES[data.funcao] || 'Sem função';
+  mostrarEuNoMenu();
   atualizarNav();
 }
 function renderDev(){
@@ -3304,7 +3322,7 @@ function chamadoItemHTML(ch){
     </div>
     ${ch.observacoes ? `<p class="ajuda">${esc(ch.observacoes)}</p>` : ''}
     <div class="cham-rodape">
-      <small>${resp ? esc(resp.nome) : 'Sem responsável'}, atualizado em ${fmtDataHora(ch.atualizado_em)}</small>
+      <small>${ch.id_chamado ? `ID ${esc(ch.id_chamado)}, ` : ''}${resp ? esc(resp.nome) : 'Sem responsável'}, atualizado em ${fmtDataHora(ch.atualizado_em)}</small>
       <button class="link" type="button" onclick="editarChamado('${ch.id}')">Editar</button>
     </div>
   </div>`;
@@ -3407,9 +3425,108 @@ async function excluirChamado(id){
   toast('Chamado excluído');
 }
 
+// ---------- campos com vários valores (códigos de produto, e-mails) ----------
+function multiHTML(id, valores, placeholder, tipo, rotuloAdd){
+  const lista = valores && valores.length ? valores : [''];
+  const linha = v => `<div class="multi-linha"><input type="${tipo}" value="${esc(v)}" placeholder="${esc(placeholder)}" aria-label="${esc(placeholder)}"><button type="button" class="multi-tirar" aria-label="Remover">×</button></div>`;
+  return `<div class="multi" id="${id}" data-tipo="${tipo}" data-ph="${esc(placeholder)}">${lista.map(linha).join('')}</div>
+    <button class="link" type="button" data-add="${id}">${rotuloAdd}</button>`;
+}
+function valoresMulti(id){
+  const vs = [...document.querySelectorAll(`#${id} input`)].map(i => i.value.trim()).filter(Boolean);
+  return [...new Set(vs)];
+}
+document.addEventListener('click', e => {
+  const add = e.target.closest('[data-add]');
+  if (add){
+    const box = $('#' + add.dataset.add);
+    box.insertAdjacentHTML('beforeend', `<div class="multi-linha"><input type="${box.dataset.tipo}" placeholder="${box.dataset.ph}" aria-label="${box.dataset.ph}"><button type="button" class="multi-tirar" aria-label="Remover">×</button></div>`);
+    box.lastElementChild.querySelector('input').focus();
+    return;
+  }
+  const tirar = e.target.closest('.multi-tirar');
+  if (tirar){
+    const box = tirar.closest('.multi');
+    if (box.children.length > 1) tirar.parentElement.remove(); else tirar.parentElement.querySelector('input').value = '';
+  }
+});
+const emailValido = v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+function lerExtrasChamado(prefixo){
+  const emails = valoresMulti(prefixo + '-emails');
+  const ruim = emails.find(v => !emailValido(v));
+  if (ruim) return { erro:`O e-mail de retorno "${ruim}" não parece válido.` };
+  return { id_chamado:$('#' + prefixo + '-idch').value.trim() || null, codigos_produto:valoresMulti(prefixo + '-produtos'), emails_retorno:emails };
+}
+
+// ---------- foto de perfil ----------
+function avatar(p, extra = ''){
+  if (!p) return `<span class="av sem" ${extra}>–</span>`;
+  return p.foto_url && linkSeguro(p.foto_url)
+    ? `<img class="av" src="${esc(p.foto_url)}" alt="" ${extra}>`
+    : `<span class="av" ${extra}>${esc(iniciais(p.nome))}</span>`;
+}
+function mostrarEuNoMenu(){
+  $('#eu-nome').textContent = state.eu.nome;
+  $('#eu-funcao').textContent = FUNCOES[state.eu.funcao] || 'Sem função';
+  $('#eu-foto').innerHTML = avatar(state.eu);
+}
+async function reduzirImagem(file, lado = 320){
+  const img = await createImageBitmap(file);
+  const s = Math.min(img.width, img.height);
+  const c = document.createElement('canvas');
+  c.width = c.height = lado;
+  c.getContext('2d').drawImage(img, (img.width - s) / 2, (img.height - s) / 2, s, s, 0, 0, lado, lado);
+  return await new Promise(r => c.toBlob(r, 'image/jpeg', 0.88));
+}
+function renderPerfil(){
+  const el = $('#painel-perfil');
+  el.innerHTML = `
+    <h3>Perfil</h3>
+    <div class="perfil">
+      <div class="perfil-foto">${avatar(state.eu)}</div>
+      <div class="perfil-acoes">
+        <label class="btn pequeno" style="display:inline-flex;cursor:pointer">Trocar foto<input id="pf-arquivo" type="file" accept="image/jpeg,image/png,image/webp" class="sr"></label>
+        ${state.eu.foto_url ? `<button class="link perigo-txt" type="button" id="pf-remover">Remover foto</button>` : ''}
+        <span class="meta">JPG, PNG ou WebP. A foto é cortada em quadrado.</span>
+      </div>
+    </div>
+    <label>Seu nome<input id="pf-nome" value="${esc(state.eu.nome)}" autocomplete="name"></label>
+    <p class="meta">${esc(state.eu.email)}, ${FUNCOES[state.eu.funcao] || 'sem função'}</p>
+    <p id="pf-erro" class="erro-txt" role="alert"></p>
+    <div class="acoes"><button class="btn primario" type="button" id="pf-salvar">Salvar nome</button></div>`;
+  $('#pf-salvar').addEventListener('click', () => salvarPerfil({ nome:$('#pf-nome').value }));
+  $('#pf-remover')?.addEventListener('click', () => salvarPerfil({ foto:null }, 'Foto removida'));
+  $('#pf-arquivo').addEventListener('change', async e => {
+    const f = e.target.files[0];
+    if (!f) return;
+    $('#pf-erro').textContent = '';
+    try {
+      const blob = await reduzirImagem(f);
+      const caminho = `${state.eu.id}/avatar.jpg`;
+      const { error } = await sb.storage.from('avatares').upload(caminho, blob, { upsert:true, contentType:'image/jpeg' });
+      if (error) throw error;
+      const { data } = sb.storage.from('avatares').getPublicUrl(caminho);
+      await salvarPerfil({ foto:`${data.publicUrl}?v=${Date.now()}` }, 'Foto atualizada');
+    } catch (err){ $('#pf-erro').textContent = 'Não foi possível enviar a foto: ' + (err.message || err); }
+  });
+}
+async function salvarPerfil({ nome, foto }, msg = 'Nome salvo'){
+  const novoNome = nome !== undefined ? nome.trim() : state.eu.nome;
+  const novaFoto = foto !== undefined ? foto : (state.eu.foto_url || null);
+  if (!novoNome){ $('#pf-erro').textContent = 'Informe seu nome.'; return; }
+  const { error } = await sb.rpc('atualizar_perfil', { p_nome:novoNome, p_foto_url:novaFoto });
+  if (error){ $('#pf-erro').textContent = 'Não foi possível salvar: ' + error.message; return; }
+  state.eu = { ...state.eu, nome:novoNome, foto_url:novaFoto };
+  const c = state.colaboradores.find(x => x.id === state.eu.id);
+  if (c){ c.nome = novoNome; c.foto_url = novaFoto; }
+  mostrarEuNoMenu(); renderPerfil();
+  toast(msg);
+}
+
 // ---------- aba de chamados ----------
 const tituloChamado = ch => ch.assunto || `Chamado de ${fmtData(ch.data_chamado)}`;
 document.querySelectorAll('[data-fcham]').forEach(b => b.addEventListener('click', () => { state.filtroCham = b.dataset.fcham; renderChamados(); }));
+$('#busca-cham').placeholder = 'Buscar chamado, ID, produto, cliente ou problema';
 $('#busca-cham').addEventListener('input', e => { state.buscaCham = e.target.value; renderChamados(); });
 $('#btn-novo-chamado').addEventListener('click', abrirModalChamado);
 
@@ -3429,7 +3546,7 @@ function renderChamados(){
   const lista = state.chamados
     .map(ch => ({ ch, p:ch.problema_id ? state.problemas.find(x => x.id === ch.problema_id) : null, c:state.clientes.find(x => x.id === ch.cliente_id) }))
     .filter(({ ch }) => f === 'todos' || (f === 'pendentes' ? ch.status !== 'concluido' : f === 'sem' ? !ch.problema_id : ch.status === f))
-    .filter(({ ch, p, c }) => !q || norm(`${tituloChamado(ch)} ${p?.titulo || ''} ${c?.nome || ''}`).includes(q))
+    .filter(({ ch, p, c }) => !q || norm(`${tituloChamado(ch)} ${p?.titulo || ''} ${c?.nome || ''} ${ch.id_chamado || ''} ${(ch.codigos_produto || []).join(' ')} ${(ch.emails_retorno || []).join(' ')}`).includes(q))
     .sort((a,b) => ORDEM_CHAM[a.ch.status] - ORDEM_CHAM[b.ch.status] || (a.ch.data_chamado < b.ch.data_chamado ? 1 : a.ch.data_chamado > b.ch.data_chamado ? -1 : 0));
 
   const el = $('#lista-chamados-geral');
@@ -3444,7 +3561,7 @@ function renderChamados(){
     return `<div class="linha-cham" data-estado="${ch.status}">
       <button class="lc-abrir" type="button" onclick="abrirChamado('${ch.id}')">
         <strong>${esc(tituloChamado(ch))}</strong>
-        <small>${esc(c?.nome || 'Cliente')}: ${p ? esc(p.titulo) : '<span class="sem-prob">sem problema vinculado</span>'}</small>
+        <small>${esc(c?.nome || 'Cliente')}: ${p ? esc(p.titulo) : '<span class="sem-prob">sem problema vinculado</span>'}${ch.id_chamado ? `, ID ${esc(ch.id_chamado)}` : ''}${ch.codigos_produto?.length ? `, ${ch.codigos_produto.length} ${ch.codigos_produto.length === 1 ? 'produto' : 'produtos'}` : ''}</small>
       </button>
       <select class="sel-estado" data-estado="${ch.status}" aria-label="Estado do chamado" onchange="mudarEstadoChamado('${ch.id}', this)">${opcoesDe(ST_CHAM, ch.status)}</select>
       <span class="lc-resp">${resp ? esc(resp.nome) : '–'}</span>
@@ -3458,6 +3575,9 @@ function abrirModalChamado(){
   const clientes = state.clientes.filter(c => c.status !== 'saiu').sort((a,b) => a.nome.localeCompare(b.nome, 'pt-BR'));
   $('#mch-cliente').innerHTML = `<option value="">Escolha o cliente</option>` + clientes.map(c => `<option value="${c.id}">${esc(c.nome)}</option>`).join('');
   $('#mch-data').value = hoje();
+  $('#mch-idch').value = '';
+  $('#mch-produtos-box').innerHTML = multiHTML('mch-produtos', [], 'SKU ou ASIN', 'text', '+ Adicionar produto');
+  $('#mch-emails-box').innerHTML = multiHTML('mch-emails', [], 'email@exemplo.com', 'email', '+ Adicionar e-mail');
   $('#mch-erro').textContent = '';
   $('#modal-chamado').showModal();
   $('#mch-cliente').focus();
@@ -3471,7 +3591,9 @@ $('#form-novo-chamado').addEventListener('submit', async e => {
   if (!cliente_id){ erro.textContent = 'Escolha o cliente.'; return; }
   if (!data_chamado){ erro.textContent = 'Informe a data do chamado.'; return; }
   const btn = $('#mch-salvar'); btn.disabled = true;
-  const { data, error } = await sb.from('chamados').insert({ cliente_id, data_chamado, status:'aberto', responsavel:state.eu.id }).select().single();
+  const extras = lerExtrasChamado('mch');
+  if (extras.erro){ erro.textContent = extras.erro; btn.disabled = false; return; }
+  const { data, error } = await sb.from('chamados').insert({ cliente_id, data_chamado, status:'aberto', responsavel:state.eu.id, ...extras }).select().single();
   btn.disabled = false;
   if (error){ erro.textContent = 'Não foi possível criar: ' + error.message; return; }
   state.chamados.unshift(data);
@@ -3505,7 +3627,10 @@ function abrirChamado(id){
           <label>Data do chamado<input id="c2-data" type="date" value="${ch.data_chamado}"></label>
           <label>Estado<select id="c2-estado">${opcoesDe(ST_CHAM, ch.status)}</select></label>
         </div>
+        <label>ID do chamado <span class="opc">(opcional)</span><input id="c2-idch" value="${esc(ch.id_chamado)}" placeholder="Ex.: 1234567890"></label>
         <label>Assunto <span class="opc">(opcional)</span><input id="c2-assunto" value="${esc(ch.assunto)}" placeholder="Ex.: reativar anúncio suprimido"></label>
+        <div class="campo"><span class="rotulo">Códigos de produto <span class="opc">(opcional)</span></span>${multiHTML('c2-produtos', ch.codigos_produto, 'SKU ou ASIN', 'text', '+ Adicionar produto')}</div>
+        <div class="campo"><span class="rotulo">E-mails de retorno <span class="opc">(opcional)</span></span>${multiHTML('c2-emails', ch.emails_retorno, 'email@exemplo.com', 'email', '+ Adicionar e-mail')}</div>
         <label>Observações <span class="opc">(opcional)</span><textarea id="c2-obs" rows="3">${esc(ch.observacoes)}</textarea></label>
         <label>Responsável<select id="c2-resp">${opcoesTodos(ch.responsavel)}</select></label>
         <h3 class="sub">Problema vinculado</h3>
@@ -3541,6 +3666,8 @@ async function salvarFichaChamado(e){
   const erro = $('#c2-erro'); erro.textContent = '';
   const data_chamado = $('#c2-data').value;
   if (!data_chamado){ erro.textContent = 'Informe a data do chamado.'; return; }
+  const extras = lerExtrasChamado('c2');
+  if (extras.erro){ erro.textContent = extras.erro; return; }
   const btn = $('#c2-salvar'); btn.disabled = true;
   let problema_id = $('#c2-prob').value || null;
   if (problema_id === 'novo'){
@@ -3558,6 +3685,7 @@ async function salvarFichaChamado(e){
     observacoes: $('#c2-obs').value.trim() || null,
     responsavel: $('#c2-resp').value || null,
     problema_id,
+    ...extras,
   };
   const { data, error } = await sb.from('chamados').update(dados).eq('id', id).select().single();
   btn.disabled = false;
@@ -3700,7 +3828,7 @@ async function salvarColaborador(id, funcao, ativo, msg){
     : await sb.rpc('definir_colaborador', { p_id:id, p_funcao:funcao || null, p_ativo:ativo });
   if (error){ toast('Não foi possível salvar: ' + error.message, true); return; }
   if (id === state.eu.id) await atualizarEu();
-  const r = await sb.from('colaboradores').select('id,nome,email,funcao,ativo,criado_em').order('nome');
+  const r = await sb.from('colaboradores').select('id,nome,email,funcao,ativo,criado_em,foto_url').order('nome');
   if (!r.error) state.colaboradores = r.data;
   renderEquipe();
   toast(msg);
