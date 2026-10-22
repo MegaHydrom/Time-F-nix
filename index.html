@@ -1092,7 +1092,7 @@ const fmtDataHora = ts => new Date(ts).toLocaleString('pt-BR', { day:'2-digit', 
 const iniciais = nome => (nome || '?').trim().split(/\s+/).slice(0,2).map(p => p[0]).join('').toUpperCase();
 
 let sb;
-const state = { eu:null, colaboradores:[], clientes:[], problemas:[], chamados:[], filtro:'todos', busca:'', filtroCham:'pendentes', buscaCham:'', view:'clientes', aberto:null, problemaAberto:null, statusEscolhido:null, metricas:[], importacao:null, adsCliente:null, adsBusca:'', adsMostrarSaiu:false, adsFiltro:'todos', adsTipo:'alteracao', adsSituacao:new Map(), adsRegistros:[], editandoReg:null, listings:[], listingEventos:[], config:new Map(), filtroList:'abertos', buscaList:'', listingAberto:null, dev:null, verComo:null, dashEscopo:'minhas', adsDia:null, adsMes:hoje().slice(0,7), selFiltro:'ativos', selBusca:'', promocoes:[], eventos:[], eventoClientes:[], eventoSel:null, fPromo:'andamento', buscaPromo:'', promoEditando:null, promoTipo:null, fEv:'todas', buscaEv:'', eventoEditando:null, chamadoAberto:null, sadsFiltro:'todos', sadsBusca:'', sadsSaiu:false, fProb:'abertos', buscaProb:'', gravProb:'' };
+const state = { eu:null, colaboradores:[], clientes:[], problemas:[], chamados:[], filtro:'todos', busca:'', filtroCham:'pendentes', buscaCham:'', view:'clientes', aberto:null, problemaAberto:null, statusEscolhido:null, metricas:[], importacao:null, adsCliente:null, adsBusca:'', adsMostrarSaiu:false, adsFiltro:'todos', adsTipo:'alteracao', adsSituacao:new Map(), adsRegistros:[], editandoReg:null, listings:[], listingEventos:[], config:new Map(), filtroList:'abertos', buscaList:'', listingAberto:null, dev:null, verComo:null, dashEscopo:'minhas', adsDia:null, adsMes:hoje().slice(0,7), selFiltro:'ativos', selBusca:'', promocoes:[], eventos:[], eventoClientes:[], eventoSel:null, fPromo:'andamento', buscaPromo:'', promoEditando:null, promoTipo:null, fEv:'todas', buscaEv:'', eventoEditando:null, chamadoAberto:null, sadsFiltro:'todos', dashMes:hoje().slice(0,7), dashDia:null, dashIds:null, dashCalCli:null, sadsBusca:'', sadsSaiu:false, fProb:'abertos', buscaProb:'', gravProb:'' };
 const colab = id => state.colaboradores.find(c => c.id === id);
 const souHead = () => state.eu?.funcao === 'head';
 
@@ -2867,6 +2867,9 @@ function renderDashboard(){
     ];
   }
 
+  paineis.push(`<section class="painel"><h3>Calendário de alterações</h3><div id="dash-cal"></div></section>`);
+  state.dashIds = ids;
+
   const ctrl = `<div class="dash-ctrl">
     ${g !== 'head' ? `<button class="filtro" type="button" data-escopo="minhas" data-estado="todos" aria-pressed="${state.dashEscopo === 'minhas'}">Minhas contas</button>
       <button class="filtro" type="button" data-escopo="todas" data-estado="todos" aria-pressed="${state.dashEscopo === 'todas'}">Toda a carteira</button>` : ''}
@@ -2884,11 +2887,75 @@ function renderDashboard(){
     <div class="kpis" data-board="kpis-${g}">${kpis}</div>
     <div class="dash-grade" data-board="dash-${g}">${paineis.map(comoWidget).join('')}</div>`;
   $('#dash').querySelectorAll('[data-board]').forEach(aplicarLayout);
+  renderCalendarioDash();
 
   $('#dash').querySelectorAll('[data-escopo]').forEach(b => b.addEventListener('click', () => { state.dashEscopo = b.dataset.escopo; renderDashboard(); }));
   $('#dash-ver')?.addEventListener('change', e => { state.verComo = e.target.value; renderDashboard(); });
 }
 const plDias = n => n <= 0 ? 'hoje' : `${n} ${n === 1 ? 'dia' : 'dias'}`;
+
+// ---------- calendário do dashboard (igual ao da aba Ads, somando as contas do painel) ----------
+function renderCalendarioDash(){
+  const el = $('#dash-cal');
+  if (!el) return;
+  const ids = state.dashIds || new Set();
+  if (state.dashCalCli && !ids.has(state.dashCalCli)) state.dashCalCli = null;
+  const doFiltro = r => state.dashCalCli ? r.cliente_id === state.dashCalCli : ids.has(r.cliente_id);
+  const clientesCal = state.clientes.filter(c => ids.has(c.id)).sort((x, y) => x.nome.localeCompare(y.nome, 'pt-BR'));
+  const [a, m] = state.dashMes.split('-').map(Number);
+  const dias = new Date(a, m, 0).getDate();
+  const vazios = (new Date(a, m - 1, 1).getDay() + 6) % 7;
+  const regs = state.adsRegistros.filter(r => doFiltro(r) && r.data.startsWith(state.dashMes));
+  const marca = new Map();
+  regs.forEach(r => { const d = +r.data.slice(8, 10); const o = marca.get(d) || { alt:0, dem:0 }; if (r.tipo === 'demanda') o.dem++; else o.alt++; marca.set(d, o); });
+  const hj = hoje();
+  const nm = new Date(a, m - 1, 1).toLocaleDateString('pt-BR', { month:'long', year:'numeric' });
+  const diasAlt = [...marca.values()].filter(o => o.alt).length;
+  let cel = ['S','T','Q','Q','S','S','D'].map(s => `<span class="cal-sem">${s}</span>`).join('');
+  cel += '<span></span>'.repeat(vazios);
+  for (let d = 1; d <= dias; d++){
+    const iso = `${state.dashMes}-${String(d).padStart(2, '0')}`;
+    const o = marca.get(d);
+    const cls = ['cal-dia', o?.alt ? 'alt' : '', o?.dem ? 'dem' : '', iso === hj ? 'hoje' : '', iso === state.dashDia ? 'sel' : ''].join(' ');
+    cel += o
+      ? `<button type="button" class="${cls}" title="${o.alt ? `${o.alt} ${o.alt === 1 ? 'alteração' : 'alterações'}` : ''}${o.alt && o.dem ? ', ' : ''}${o.dem ? `${o.dem} ${o.dem === 1 ? 'demanda' : 'demandas'}` : ''}" onclick="filtrarDiaDash('${iso}')">${d}</button>`
+      : `<span class="${cls}">${d}</span>`;
+  }
+  let detalhe;
+  if (state.dashDia){
+    const doDia = state.adsRegistros.filter(r => doFiltro(r) && r.data === state.dashDia)
+      .sort((x, y) => (x.tipo === 'demanda') - (y.tipo === 'demanda') || nomeCli(x.cliente_id).localeCompare(nomeCli(y.cliente_id), 'pt-BR'));
+    detalhe = `<div class="bloco-cab"><strong style="font-size:14px">${fmtDiaLongo(state.dashDia)}</strong><button class="link" type="button" onclick="filtrarDiaDash('${state.dashDia}')">Fechar</button></div>
+      <div class="dash-lista">${doDia.map(r => itemDash(`data-tipo="${r.tipo}"`, esc(nomeCli(r.cliente_id)), esc(r.texto), r.tipo === 'demanda' ? (r.concluida ? 'Demanda concluída' : 'Demanda') : r.tipo === 'status' ? 'Status' : 'Alteração', `irParaAds('${r.cliente_id}')`)).join('')}</div>`;
+  } else {
+    detalhe = `<p class="meta">${diasAlt ? `${diasAlt} ${diasAlt === 1 ? 'dia' : 'dias'} com alteração neste mês${state.dashCalCli ? ` em ${esc(nomeCli(state.dashCalCli))}` : ''}. Clique num dia marcado para ver o que foi feito.` : `Nenhuma alteração registrada neste mês${state.dashCalCli ? ` em ${esc(nomeCli(state.dashCalCli))}` : ''}.`}</p>`;
+  }
+  el.innerHTML = `
+    <select id="dash-cal-cli" aria-label="Filtrar o calendário por cliente">
+      <option value="">Todas as contas do painel (${clientesCal.length})</option>
+      ${clientesCal.map(c => `<option value="${c.id}" ${c.id === state.dashCalCli ? 'selected' : ''}>${esc(c.nome)}</option>`).join('')}
+    </select>
+    <div class="cal-topo" style="margin-top:10px">
+      <button class="cal-nav" type="button" onclick="mudarMesDash(-1)" aria-label="Mês anterior">‹</button>
+      <strong>${nm.charAt(0).toUpperCase() + nm.slice(1)}</strong>
+      <button class="cal-nav" type="button" onclick="mudarMesDash(1)" aria-label="Próximo mês">›</button>
+    </div>
+    <div class="cal">${cel}</div>
+    <div class="cal-leg"><span><i style="background:var(--accent)"></i>Dia com alteração</span><span><i style="background:var(--pausado)"></i>Demanda</span></div>
+    ${detalhe}`;
+  $('#dash-cal-cli').addEventListener('change', e => { state.dashCalCli = e.target.value || null; state.dashDia = null; renderCalendarioDash(); });
+}
+function mudarMesDash(n){
+  const [a, m] = state.dashMes.split('-').map(Number);
+  const d = new Date(a, m - 1 + n, 1);
+  state.dashMes = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+  state.dashDia = null;
+  renderCalendarioDash();
+}
+function filtrarDiaDash(iso){
+  state.dashDia = state.dashDia === iso ? null : iso;
+  renderCalendarioDash();
+}
 
 // ---------- demanda de campanha a partir de listing ----------
 async function criarDemandaCampanha(id){
