@@ -213,6 +213,16 @@ img.av{display:block;object-fit:cover;padding:0}
 .multi-tirar:hover{color:var(--danger);border-color:var(--danger)}
 .campo .link{justify-self:start}
 .ch-extra{color:var(--muted);font-size:12.5px}
+.equipe-grade{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
+.membro-card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:22px 16px 18px;display:grid;justify-items:center;text-align:center;gap:6px;align-content:start}
+.membro-card .av{width:84px;height:84px;font-size:26px;margin-bottom:6px}
+.membro-card.inativo{opacity:.6}
+.mc-nome{font-size:15.5px;overflow-wrap:anywhere}
+.mc-funcao{font-size:12.5px;font-weight:600;color:var(--accent);background:var(--accent-soft);border-radius:999px;padding:2px 10px}
+.membro-card[data-f="head"] .mc-funcao{color:var(--accent-ink);background:var(--accent)}
+.mc-status{font-size:14px;color:var(--ink);margin:4px 0 0;overflow-wrap:anywhere;line-height:1.4}
+.mc-admin{display:grid;gap:8px;width:100%;margin-top:8px;padding-top:12px;border-top:1px solid var(--line)}
+.mc-admin select{font-size:14px;padding:7px 9px}
 .l-data{font-variant-numeric:tabular-nums;color:var(--muted);font-size:14px}
 .tend{font-weight:600;color:var(--cor);font-size:13.5px;white-space:nowrap}
 .tag{display:inline-flex;align-items:center;font-size:12.5px;font-weight:600;color:var(--cor);border:1px solid var(--cor);border-radius:999px;padding:1px 9px;white-space:nowrap}
@@ -671,7 +681,7 @@ button.cal-dia.alt:hover{background:var(--accent);filter:brightness(1.1)}
       <button class="nav-item" data-view="promocoes">Promoções</button>
       <button class="nav-item" data-view="problemas">Problemas</button>
       <button class="nav-item" data-view="chamados">Chamados</button>
-      <button class="nav-item" data-view="equipe" id="nav-equipe" hidden>Equipe</button>
+      <button class="nav-item" data-view="equipe" id="nav-equipe">Equipe</button>
       <button class="nav-item" data-view="config">Configurações</button>
     </nav>
     <div class="eu">
@@ -876,7 +886,7 @@ button.cal-dia.alt:hover{background:var(--accent);filter:brightness(1.1)}
       <div class="cabeca">
         <div>
           <h1>Equipe</h1>
-          <p>Troque a função de cada colaborador ou remova o acesso de quem saiu.</p>
+          <p>Quem faz parte da equipe e o status de cada um.</p>
         </div>
       </div>
       <div id="equipe-conteudo"></div>
@@ -998,8 +1008,8 @@ button.cal-dia.alt:hover{background:var(--accent);filter:brightness(1.1)}
 // =====================================================================
 // CONFIGURAÇÃO — cole aqui os dados do seu projeto Supabase
 // =====================================================================
-const SUPABASE_URL = 'https://egevxhxhwhngxcwcngom.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable_YVNLs669lk1LQeo3q6-l4g_v8Y3O-96';
+const SUPABASE_URL = 'COLE_A_URL_DO_PROJETO';
+const SUPABASE_ANON_KEY = 'COLE_A_ANON_KEY';
 
 // =====================================================================
 const FUNCOES = { head:'HEAD', gestor_ads:'Gestor de Ads', operador_contas:'Operador de contas', gestor_contas:'Gestor de contas' };
@@ -1137,7 +1147,7 @@ $('#btn-verificar').addEventListener('click', async () => {
 // ---------- dados ----------
 async function carregarDados(){
   const [c, k, p, ch] = await Promise.all([
-    sb.from('colaboradores').select('id,nome,email,funcao,ativo,criado_em,foto_url').order('nome'),
+    sb.from('colaboradores').select('id,nome,email,funcao,ativo,criado_em,foto_url,status_frase').order('nome'),
     sb.from('clientes').select('*').order('nome'),
     sb.from('problemas').select('*').order('criado_em', { ascending:false }),
     sb.from('chamados').select('*').order('criado_em', { ascending:false }),
@@ -1178,7 +1188,6 @@ async function buscarTodos(tabela, coluna = 'id'){
 
 // ---------- navegação ----------
 function irPara(view){
-  if (view === 'equipe' && !souHead() && !state.dev) view = 'dashboard';
   if (state.view === 'ads' && view !== 'ads' && !podeSairDaSituacao()) return;
   state.view = view;
   sairEdicao();
@@ -2584,7 +2593,6 @@ document.querySelectorAll('.visual').forEach(b => b.addEventListener('click', ()
 
 // ---------- modo dev ----------
 function atualizarNav(){
-  $('#nav-equipe').hidden = !(souHead() || state.dev);
   $('#dev-badge').hidden = !state.dev;
 }
 async function atualizarEu(){
@@ -2599,7 +2607,7 @@ function renderDev(){
   if (state.dev){
     el.innerHTML = `
       <h3>Modo dev</h3>
-      <p class="ajuda">Ativo nesta aba do navegador. No Dashboard, dá para escolher ver como qualquer função, e a aba Equipe fica liberada para alterar a função de qualquer colaborador, inclusive a sua.</p>
+      <p class="ajuda">Ativo nesta aba do navegador. No Dashboard, dá para escolher ver como qualquer função, e a aba Equipe passa a permitir mudar a função e o acesso de qualquer colaborador, inclusive a sua.</p>
       <div class="acoes" style="justify-content:flex-start">
         <button class="btn" type="button" id="btn-ir-equipe">Abrir Equipe</button>
         <button class="btn perigo" type="button" id="btn-sair-dev">Sair do modo dev</button>
@@ -3491,10 +3499,14 @@ function renderPerfil(){
       </div>
     </div>
     <label>Seu nome<input id="pf-nome" value="${esc(state.eu.nome)}" autocomplete="name"></label>
+    <label>Status <span class="opc">(uma frase que aparece no seu card da equipe)</span><input id="pf-status" maxlength="80" value="${esc(state.eu.status_frase)}" placeholder="Ex.: Focado no Prime Day esta semana"></label>
+    <p class="meta" id="pf-cont"></p>
     <p class="meta">${esc(state.eu.email)}, ${FUNCOES[state.eu.funcao] || 'sem função'}</p>
     <p id="pf-erro" class="erro-txt" role="alert"></p>
-    <div class="acoes"><button class="btn primario" type="button" id="pf-salvar">Salvar nome</button></div>`;
-  $('#pf-salvar').addEventListener('click', () => salvarPerfil({ nome:$('#pf-nome').value }));
+    <div class="acoes"><button class="btn primario" type="button" id="pf-salvar">Salvar perfil</button></div>`;
+  const cont = () => $('#pf-cont').textContent = `${$('#pf-status').value.length} de 80 caracteres`;
+  $('#pf-status').addEventListener('input', cont); cont();
+  $('#pf-salvar').addEventListener('click', () => salvarPerfil({ nome:$('#pf-nome').value, status:$('#pf-status').value }, 'Perfil salvo'));
   $('#pf-remover')?.addEventListener('click', () => salvarPerfil({ foto:null }, 'Foto removida'));
   $('#pf-arquivo').addEventListener('change', async e => {
     const f = e.target.files[0];
@@ -3510,15 +3522,16 @@ function renderPerfil(){
     } catch (err){ $('#pf-erro').textContent = 'Não foi possível enviar a foto: ' + (err.message || err); }
   });
 }
-async function salvarPerfil({ nome, foto }, msg = 'Nome salvo'){
+async function salvarPerfil({ nome, foto, status }, msg = 'Perfil salvo'){
+  const novoStatus = status !== undefined ? (status.trim() || null) : (state.eu.status_frase || null);
   const novoNome = nome !== undefined ? nome.trim() : state.eu.nome;
   const novaFoto = foto !== undefined ? foto : (state.eu.foto_url || null);
   if (!novoNome){ $('#pf-erro').textContent = 'Informe seu nome.'; return; }
-  const { error } = await sb.rpc('atualizar_perfil', { p_nome:novoNome, p_foto_url:novaFoto });
+  const { error } = await sb.rpc('atualizar_perfil', { p_nome:novoNome, p_foto_url:novaFoto, p_status:novoStatus });
   if (error){ $('#pf-erro').textContent = 'Não foi possível salvar: ' + error.message; return; }
-  state.eu = { ...state.eu, nome:novoNome, foto_url:novaFoto };
+  state.eu = { ...state.eu, nome:novoNome, foto_url:novaFoto, status_frase:novoStatus };
   const c = state.colaboradores.find(x => x.id === state.eu.id);
-  if (c){ c.nome = novoNome; c.foto_url = novaFoto; }
+  if (c){ c.nome = novoNome; c.foto_url = novaFoto; c.status_frase = novoStatus; }
   mostrarEuNoMenu(); renderPerfil();
   toast(msg);
 }
@@ -3772,37 +3785,38 @@ $('#form-novo-prob').addEventListener('submit', async e => {
 });
 
 // ---------- equipe ----------
-function selectFuncao(id, atual, desabilitado){
-  return `<select data-funcao="${id}" ${desabilitado ? 'disabled' : ''} aria-label="Função">
-    <option value="" ${!atual ? 'selected' : ''}>Escolha a função</option>
-    ${Object.entries(FUNCOES).map(([k,v]) => `<option value="${k}" ${k === atual ? 'selected' : ''}>${v}</option>`).join('')}
-  </select>`;
-}
-
+const ORDEM_FUNCAO = { head:0, gestor_ads:1, gestor_contas:2, operador_contas:3 };
 function renderEquipe(){
-  const ativos = state.colaboradores.filter(p => p.ativo);
-  const semAcesso = state.colaboradores.filter(p => !p.ativo);
-  const linha = (p, acoes) => `
-    <div class="membro">
-      <div><strong>${esc(p.nome)}</strong><small>${esc(p.email)}</small></div>
-      ${selectFuncao(p.id, p.funcao, state.dev ? false : (p.id === state.eu.id || !p.ativo))}
-      <div>${acoes}</div>
-    </div>`;
+  const dev = !!state.dev;
+  const lista = state.colaboradores
+    .filter(p => dev || p.ativo)
+    .sort((a,b) => (b.ativo - a.ativo) || ((ORDEM_FUNCAO[a.funcao] ?? 9) - (ORDEM_FUNCAO[b.funcao] ?? 9)) || a.nome.localeCompare(b.nome, 'pt-BR'));
+  const contasDe = id => state.clientes.filter(c => c.status !== 'saiu' && [c.resp_gestor_ads, c.resp_operador, c.resp_gestor_contas].includes(id)).length;
 
   $('#equipe-conteudo').innerHTML = `
-    ${state.dev ? `<p class="aviso" style="margin-bottom:18px">Modo dev: você pode alterar a função de qualquer colaborador, inclusive a sua.</p>` : ''}
-    <div class="grupo">
-      <h2>Com acesso</h2>
-      <div class="tabela">${ativos.map(p => linha(p, p.id === state.eu.id
-        ? `<span class="voce">Você</span>`
-        : `<button class="btn perigo pequeno" type="button" data-remover="${p.id}">Remover acesso</button>`)).join('')}</div>
+    ${dev ? `<p class="aviso" style="margin-bottom:18px">Modo dev ativo: você pode mudar a função e o acesso de qualquer colaborador, inclusive a sua.</p>` : ''}
+    <div class="equipe-grade">
+      ${lista.map(p => {
+        const n = contasDe(p.id), eu = p.id === state.eu.id;
+        return `<article class="membro-card ${p.ativo ? '' : 'inativo'}" data-f="${p.funcao || ''}">
+          <div class="mc-foto">${avatar(p)}</div>
+          <strong class="mc-nome">${esc(p.nome)}${eu ? ' <span class="meta">(você)</span>' : ''}</strong>
+          <span class="mc-funcao">${FUNCOES[p.funcao] || 'Sem função'}</span>
+          <p class="mc-status">${p.status_frase ? `“${esc(p.status_frase)}”` : '<span class="meta">Sem status</span>'}</p>
+          <small class="meta">${n} ${n === 1 ? 'conta' : 'contas'}${p.ativo ? '' : ', sem acesso'}</small>
+          ${dev ? `<div class="mc-admin">
+            <select data-funcao="${p.id}" aria-label="Função de ${esc(p.nome)}">
+              <option value="" ${!p.funcao ? 'selected' : ''}>Escolha a função</option>
+              ${Object.entries(FUNCOES).map(([k,v]) => `<option value="${k}" ${k === p.funcao ? 'selected' : ''}>${v}</option>`).join('')}
+            </select>
+            ${eu ? '' : p.ativo
+              ? `<button class="btn perigo pequeno" type="button" data-remover="${p.id}">Remover acesso</button>`
+              : `<button class="btn pequeno" type="button" data-devolver="${p.id}">Devolver acesso</button>`}
+          </div>` : ''}
+        </article>`;
+      }).join('')}
     </div>
-    ${semAcesso.length ? `
-    <div class="grupo">
-      <h2>Sem acesso</h2>
-      <p>Continuam vinculados às contas em que eram responsáveis, mas não conseguem entrar.</p>
-      <div class="tabela">${semAcesso.map(p => linha(p, `<button class="btn pequeno" type="button" data-devolver="${p.id}">Devolver acesso</button>`)).join('')}</div>
-    </div>` : ''}`;
+    ${dev ? '' : `<p class="meta" style="margin-top:18px">Mudanças de função e de acesso são feitas pelo modo dev, em Configurações.</p>`}`;
 
   const el = $('#equipe-conteudo');
   el.querySelectorAll('[data-remover]').forEach(b => b.addEventListener('click', () => {
@@ -3822,13 +3836,12 @@ function renderEquipe(){
 }
 
 async function salvarColaborador(id, funcao, ativo, msg){
+  if (!state.dev){ toast('Ative o modo dev em Configurações para mudar funções.', true); return; }
   if (ativo && !funcao){ toast('Defina a função antes de liberar o acesso.', true); return; }
-  const { error } = state.dev
-    ? await sb.rpc('dev_definir_colaborador', { p_chave:state.dev.chave, p_id:id, p_funcao:funcao || null, p_ativo:ativo })
-    : await sb.rpc('definir_colaborador', { p_id:id, p_funcao:funcao || null, p_ativo:ativo });
+  const { error } = await sb.rpc('dev_definir_colaborador', { p_chave:state.dev.chave, p_id:id, p_funcao:funcao || null, p_ativo:ativo });
   if (error){ toast('Não foi possível salvar: ' + error.message, true); return; }
   if (id === state.eu.id) await atualizarEu();
-  const r = await sb.from('colaboradores').select('id,nome,email,funcao,ativo,criado_em,foto_url').order('nome');
+  const r = await sb.from('colaboradores').select('id,nome,email,funcao,ativo,criado_em,foto_url,status_frase').order('nome');
   if (!r.error) state.colaboradores = r.data;
   renderEquipe();
   toast(msg);
