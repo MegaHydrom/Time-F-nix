@@ -221,6 +221,8 @@ img.av{display:block;object-fit:cover;padding:0}
 .mc-funcao{font-size:12.5px;font-weight:600;color:var(--accent);background:var(--accent-soft);border-radius:999px;padding:2px 10px}
 .membro-card[data-f="head"] .mc-funcao{color:var(--accent-ink);background:var(--accent)}
 .mc-status{font-size:14px;color:var(--ink);margin:4px 0 0;overflow-wrap:anywhere;line-height:1.4}
+.membro-card{position:relative}
+.mc-novo{font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--accent-ink);background:var(--accent);border-radius:999px;padding:2px 9px}
 .mc-admin{display:grid;gap:8px;width:100%;margin-top:8px;padding-top:12px;border-top:1px solid var(--line)}
 .mc-admin select{font-size:14px;padding:7px 9px}
 .l-data{font-variant-numeric:tabular-nums;color:var(--muted);font-size:14px}
@@ -1203,7 +1205,7 @@ $('#btn-verificar').addEventListener('click', async () => {
 // ---------- dados ----------
 async function carregarDados(){
   const [c, k, p, ch] = await Promise.all([
-    sb.from('colaboradores').select('id,nome,email,funcao,ativo,criado_em,foto_url,status_frase').order('nome'),
+    sb.from('colaboradores').select('id,nome,email,funcao,ativo,criado_em,foto_url,status_frase,status_atualizado_em').order('nome'),
     sb.from('clientes').select('*').order('nome'),
     sb.from('problemas').select('*').order('criado_em', { ascending:false }),
     sb.from('chamados').select('*').order('criado_em', { ascending:false }),
@@ -3648,7 +3650,6 @@ async function definirStatusAds(s){
   document.querySelectorAll('.sads-escolha button').forEach(b => b.setAttribute('aria-checked', String(b.dataset.sads === s)));
   renderSitMeta(); renderTimeline(); renderAdsLista();
   if ($('#modal-sads').open) renderVisaoAds();
-  animarQueda(document.querySelector('[data-widget="contexto"]'));
   toast(`Status de Ads: ${STATUS_ADS[s]}. Registrado na timeline.`);
 }
 
@@ -3936,6 +3937,13 @@ function renderEquipe(){
   const lista = state.colaboradores
     .filter(p => dev || p.ativo)
     .sort((a,b) => (b.ativo - a.ativo) || ((ORDEM_FUNCAO[a.funcao] ?? 9) - (ORDEM_FUNCAO[b.funcao] ?? 9)) || a.nome.localeCompare(b.nome, 'pt-BR'));
+  // status que esta pessoa ainda não viu (guardado por navegador)
+  const chaveVistos = `vistos:${state.eu.id}`;
+  let vistos = {};
+  try { vistos = JSON.parse(localStorage.getItem(chaveVistos) || '{}'); } catch {}
+  const novos = new Set(state.colaboradores
+    .filter(p => p.id !== state.eu.id && p.ativo && p.status_frase && p.status_atualizado_em && vistos[p.id] !== p.status_atualizado_em)
+    .map(p => p.id));
   const contasDe = id => state.clientes.filter(c => c.status !== 'saiu' && [c.resp_gestor_ads, c.resp_operador, c.resp_gestor_contas].includes(id)).length;
 
   $('#equipe-conteudo').innerHTML = `
@@ -3943,10 +3951,11 @@ function renderEquipe(){
     <div class="equipe-grade">
       ${lista.map(p => {
         const n = contasDe(p.id), eu = p.id === state.eu.id;
-        return `<article class="membro-card ${p.ativo ? '' : 'inativo'}" data-f="${p.funcao || ''}">
+        return `<article class="membro-card ${p.ativo ? '' : 'inativo'}" data-f="${p.funcao || ''}" data-id="${p.id}">
           <div class="mc-foto">${avatar(p)}</div>
           <strong class="mc-nome">${esc(p.nome)}${eu ? ' <span class="meta">(você)</span>' : ''}</strong>
           <span class="mc-funcao">${FUNCOES[p.funcao] || 'Sem função'}</span>
+          ${novos.has(p.id) ? '<span class="mc-novo">Status novo</span>' : ''}
           <p class="mc-status">${p.status_frase ? `“${esc(p.status_frase)}”` : '<span class="meta">Sem status</span>'}</p>
           <small class="meta">${n} ${n === 1 ? 'conta' : 'contas'}${p.ativo ? '' : ', sem acesso'}</small>
           ${dev ? `<div class="mc-admin">
@@ -3964,6 +3973,13 @@ function renderEquipe(){
     ${dev ? '' : `<p class="meta" style="margin-top:18px">Mudanças de função e de acesso são feitas pelo modo dev, em Configurações.</p>`}`;
 
   const el = $('#equipe-conteudo');
+  if (novos.size && state.view === 'equipe'){
+    [...novos].forEach((id, i) => {
+      setTimeout(() => animarQueda(el.querySelector(`.membro-card[data-id="${id}"]`)), 350 + i * 500);
+      vistos[id] = colab(id).status_atualizado_em;
+    });
+    try { localStorage.setItem(chaveVistos, JSON.stringify(vistos)); } catch {}
+  }
   el.querySelectorAll('[data-remover]').forEach(b => b.addEventListener('click', () => {
     const p = colab(b.dataset.remover);
     if (confirm(`Remover o acesso de ${p.nome}? A pessoa continua vinculada às contas, mas não consegue mais entrar.`))
@@ -3986,7 +4002,7 @@ async function salvarColaborador(id, funcao, ativo, msg){
   const { error } = await sb.rpc('dev_definir_colaborador', { p_chave:state.dev.chave, p_id:id, p_funcao:funcao || null, p_ativo:ativo });
   if (error){ toast('Não foi possível salvar: ' + error.message, true); return; }
   if (id === state.eu.id) await atualizarEu();
-  const r = await sb.from('colaboradores').select('id,nome,email,funcao,ativo,criado_em,foto_url,status_frase').order('nome');
+  const r = await sb.from('colaboradores').select('id,nome,email,funcao,ativo,criado_em,foto_url,status_frase,status_atualizado_em').order('nome');
   if (!r.error) state.colaboradores = r.data;
   renderEquipe();
   toast(msg);
