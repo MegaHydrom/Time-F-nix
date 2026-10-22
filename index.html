@@ -631,7 +631,32 @@ button.cal-dia.alt:hover{background:var(--accent);filter:brightness(1.1)}
   .pl-per,.pl-st{display:none}
   .ev-linha{grid-template-columns:1fr;gap:10px}
 }
-@media (prefers-reduced-motion:reduce){*{transition:none!important}.editando .widget{animation:none}}
+/* card que levanta, tenta sair da tela e cai com força */
+.voo{position:relative;z-index:20;transform-origin:50% 100%;animation:voo-queda 1.25s both}
+@keyframes voo-queda{
+  0%  {transform:translateY(0) scale(1);box-shadow:0 0 0 rgba(0,0,0,0);animation-timing-function:cubic-bezier(.3,0,.4,1)}
+  22% {transform:translateY(-26px) scale(1.025) rotate(-.7deg);box-shadow:0 22px 40px rgba(0,0,0,.18);animation-timing-function:cubic-bezier(.2,.6,.3,1)}
+  44% {transform:translateY(-120vh) scale(1.04) rotate(1.4deg);box-shadow:0 40px 70px rgba(0,0,0,.22);animation-timing-function:linear}
+  50% {transform:translateY(-118vh) scale(1.04) rotate(1deg);animation-timing-function:cubic-bezier(.6,0,1,.6)}
+  68% {transform:translateY(0) scale(1) rotate(0);box-shadow:0 2px 6px rgba(0,0,0,.2);animation-timing-function:ease-out}
+  72% {transform:translateY(6px) scaleY(.93) scaleX(1.03);animation-timing-function:ease-out}
+  81% {transform:translateY(-14px) scaleY(1.02) scaleX(.99);animation-timing-function:ease-in}
+  89% {transform:translateY(0) scaleY(.97) scaleX(1.01);animation-timing-function:ease-out}
+  94% {transform:translateY(-3px)}
+  100%{transform:none;box-shadow:none}
+}
+.tremor{animation:tremor .38s ease-out}
+@keyframes tremor{
+  0%{transform:translate(0,0)} 15%{transform:translate(-3px,4px)} 30%{transform:translate(3px,-3px)}
+  45%{transform:translate(-2px,2px)} 60%{transform:translate(2px,-1px)} 80%{transform:translate(-1px,1px)} 100%{transform:none}
+}
+.poeira{position:absolute;left:0;right:0;bottom:-6px;height:14px;pointer-events:none;z-index:19}
+.poeira i{position:absolute;bottom:0;width:8px;height:8px;border-radius:50%;background:var(--muted);opacity:.5;animation:poeira .6s ease-out forwards}
+@keyframes poeira{to{transform:translate(var(--dx),-18px) scale(.2);opacity:0}}
+#btn-recarregar svg{width:16px;height:16px}
+.girando svg{animation:girar .8s linear infinite}
+@keyframes girar{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}.editando .widget,.voo,.tremor,.girando svg{animation:none}}
 </style>
 </head>
 <body>
@@ -703,6 +728,7 @@ button.cal-dia.alt:hover{background:var(--accent);filter:brightness(1.1)}
     <div class="eu">
       <div class="eu-topo"><span id="eu-foto"></span><div><strong id="eu-nome"></strong><small id="eu-funcao"></small><span class="dev-badge" id="dev-badge" hidden>Modo dev</span></div></div>
       <div class="eu-acoes">
+        <button class="btn pequeno icone-btn" type="button" id="btn-recarregar" title="Recarregar dados" aria-label="Recarregar dados"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/></svg></button>
         <button class="btn pequeno" type="button" id="btn-tema" aria-label="Alternar tema claro ou escuro">Tema</button>
         <button class="btn pequeno" type="button" data-sair>Sair</button>
       </div>
@@ -1235,6 +1261,41 @@ function irPara(view){
   else if (view === 'eventos'){ renderEventos(); recarregarEventoClientes().then(() => { if (state.view === 'eventos') renderEventos(); }); }
   else renderEquipe();
 }
+// Card levanta, tenta sair da tela e cai com força
+function animarQueda(card){
+  if (!card || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  card.classList.remove('voo'); void card.offsetWidth; card.classList.add('voo');
+  card.addEventListener('animationend', function fim(e){ if (e.animationName === 'voo-queda'){ card.classList.remove('voo'); card.removeEventListener('animationend', fim); } });
+  setTimeout(() => {
+    const area = card.parentElement;
+    area.classList.remove('tremor'); void area.offsetWidth; area.classList.add('tremor');
+    setTimeout(() => area.classList.remove('tremor'), 400);
+    const p = document.createElement('div'); p.className = 'poeira';
+    for (let i = 0; i < 10; i++){ const g = document.createElement('i'); g.style.left = `${5 + i * 10}%`; g.style.setProperty('--dx', `${(i - 4.5) * 7}px`); p.appendChild(g); }
+    card.appendChild(p); setTimeout(() => p.remove(), 700);
+  }, 850);
+}
+
+// Recarregar: busca tudo de novo no banco e redesenha a tela atual, sem perder onde você está
+async function recarregar(){
+  const btn = $('#btn-recarregar');
+  if (btn.classList.contains('girando')) return;
+  btn.classList.add('girando'); btn.disabled = true;
+  try {
+    await atualizarEu();
+    await carregarDados();
+    const v = state.view;
+    if (v === 'ads') renderAds(!situacaoSuja());
+    else if (v === 'equipe') renderEquipe();
+    else if (v === 'config') renderConfig();
+    else atualizarFundo();
+    if (v === 'eventos') await recarregarEventoClientes().then(renderEventos);
+    toast('Dados atualizados');
+  } catch (e){ toast('Não foi possível recarregar: ' + (e.message || e), true); }
+  finally { btn.classList.remove('girando'); btn.disabled = false; }
+}
+$('#btn-recarregar').addEventListener('click', recarregar);
+
 function atualizarFundo(){ if (state.view === 'dashboard') renderDashboard(); else if (state.view === 'clientes') renderClientes(); else if (state.view === 'ads') renderAds(); else if (state.view === 'listing') renderListings(); else if (state.view === 'promocoes') renderPromocoes(); else if (state.view === 'eventos') renderEventos(); else if (state.view === 'chamados') renderChamados(); else if (state.view === 'problemas') renderProblemas(); }
 function guardarLocal(lista, item){ const i = lista.findIndex(x => x.id === item.id); if (i >= 0) lista[i] = item; else lista.unshift(item); }
 document.querySelectorAll('.nav-item').forEach(b => b.addEventListener('click', () => { if (b.dataset.arrastou){ delete b.dataset.arrastou; return; } irPara(b.dataset.view); }));
@@ -3587,6 +3648,7 @@ async function definirStatusAds(s){
   document.querySelectorAll('.sads-escolha button').forEach(b => b.setAttribute('aria-checked', String(b.dataset.sads === s)));
   renderSitMeta(); renderTimeline(); renderAdsLista();
   if ($('#modal-sads').open) renderVisaoAds();
+  animarQueda(document.querySelector('[data-widget="contexto"]'));
   toast(`Status de Ads: ${STATUS_ADS[s]}. Registrado na timeline.`);
 }
 
