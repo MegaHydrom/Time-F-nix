@@ -222,6 +222,38 @@ img.av{display:block;object-fit:cover;padding:0}
 .membro-card[data-f="head"] .mc-funcao{color:var(--accent-ink);background:var(--accent)}
 .mc-status{font-size:14px;color:var(--ink);margin:4px 0 0;overflow-wrap:anywhere;line-height:1.4}
 .membro-card{position:relative}
+[data-ag="anotacao"]{--cor:var(--accent)}
+[data-ag="ads"]{--cor:#8B5CF6}
+[data-ag="problema"]{--cor:var(--danger)}
+[data-ag="chamado"]{--cor:#0EA5E9}
+[data-ag="listing"]{--cor:var(--pausado)}
+[data-ag="promocao"]{--cor:var(--ativo)}
+[data-ag="evento"]{--cor:#EC4899}
+[data-ag="verificacao"]{--cor:#64748B}
+.mc-foto{position:relative}
+.mc-humor{position:absolute;right:-14px;bottom:2px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:2px 8px;font-size:13px;max-width:150px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;box-shadow:0 2px 6px rgba(0,0,0,.08)}
+.emojis{display:flex;flex-wrap:wrap;gap:4px;margin-top:-4px}
+.emoji-btn{border:1px solid var(--line);background:var(--surface-2);border-radius:8px;width:34px;height:34px;font-size:18px;cursor:pointer;line-height:1}
+.emoji-btn:hover{border-color:var(--accent);transform:scale(1.08)}
+.cutucar{margin-top:6px}
+.cutucando{animation:cutuca .35s ease-out}
+@keyframes cutuca{0%{transform:translateX(0)}30%{transform:translateX(7px)}60%{transform:translateX(-3px)}100%{transform:none}}
+.cutucada{position:fixed;top:18px;left:50%;transform:translateX(-50%);z-index:80;display:flex;align-items:center;gap:12px;background:var(--surface);border:2px solid var(--accent);border-radius:14px;padding:10px 12px 10px 14px;box-shadow:0 14px 34px rgba(0,0,0,.25);animation:cutucada-entra .45s cubic-bezier(.2,1.4,.4,1);max-width:calc(100% - 24px);font-size:15px}
+.cutucada .av{width:36px;height:36px;flex:none}
+.cutucada.saindo{opacity:0;transform:translate(-50%,-20px);transition:all .4s}
+@keyframes cutucada-entra{from{transform:translate(-50%,-60px) scale(.8);opacity:0}to{transform:translateX(-50%);opacity:1}}
+.chicote{position:fixed;z-index:72;display:flex;flex-direction:column;align-items:center;gap:4px;touch-action:none}
+.chicote-cabo{width:30px;height:70px;border:0;background:none;padding:0;cursor:grab;touch-action:none;filter:drop-shadow(0 4px 6px rgba(0,0,0,.25))}
+.chicote-cabo svg{width:100%;height:100%}
+.chicote.segurando .chicote-cabo{cursor:grabbing}
+.chicote-fechar{position:absolute;top:-10px;right:-14px;width:20px;height:20px;border-radius:50%;border:1px solid var(--line);background:var(--surface);color:var(--muted);font-size:13px;line-height:1;cursor:pointer;opacity:0;transition:opacity .2s}
+.chicote:hover .chicote-fechar,.chicote-fechar:focus-visible{opacity:1}
+.chicote-tela{position:fixed;inset:0;pointer-events:none;z-index:71}
+body:has(#app[hidden]) .chicote,body:has(#app[hidden]) .chicote-tela{display:none}
+.hist{list-style:none;margin:0;padding:0;display:grid;gap:14px}
+.hist-item ul{margin:6px 0 0;padding-left:18px;display:grid;gap:4px;font-size:14px}
+.hist-cab{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+.hist-mais summary{cursor:pointer;font-size:14px;font-weight:600;color:var(--accent);margin:4px 0 12px}
 .ag-topo{display:flex;align-items:center;gap:10px}
 .ag-topo strong{font-size:16px;min-width:150px;text-align:center}
 .agenda{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--surface)}
@@ -232,15 +264,15 @@ img.av{display:block;object-fit:cover;padding:0}
 .ag-dia.fora{background:var(--surface-2);opacity:.45;cursor:default}
 .ag-n{font-size:13px;font-weight:600;width:26px;height:26px;display:grid;place-items:center;border-radius:50%;flex:none}
 .ag-dia.hoje .ag-n{background:var(--accent);color:var(--accent-ink)}
-.ag-nota{font-size:12px;background:var(--accent-soft);border-radius:5px;padding:2px 6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;border-left:3px solid var(--accent)}
-.ag-nota.comp{border-left-color:var(--pausado)}
+.ag-nota{font-size:12px;background:color-mix(in srgb, var(--cor, var(--accent)) 15%, transparent);border-radius:5px;padding:2px 6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;border-left:3px solid var(--cor, var(--accent))}
+.ag-nota.comp{border-left-style:dashed}
 .ag-nota b{font-weight:700}
 .ag-mais{font-size:11.5px;color:var(--muted);padding-left:4px}
 .nota-lista{display:grid;gap:6px;max-height:34vh;overflow-y:auto}
-.nota-item{display:grid;grid-template-columns:62px minmax(0,1fr);gap:10px;align-items:start;text-align:left;width:100%;background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:10px 12px;cursor:pointer;border-left:3px solid var(--accent)}
-.nota-item.outra{cursor:default;border-left-color:var(--pausado)}
+.nota-item{display:grid;grid-template-columns:76px minmax(0,1fr);gap:10px;align-items:start;text-align:left;width:100%;background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:10px 12px;cursor:pointer;border-left:3px solid var(--cor, var(--accent))}
+.nota-item.outra{cursor:default;border-left-style:dashed}
 .nota-item.sel{box-shadow:inset 0 0 0 1px var(--accent);border-color:var(--accent)}
-.nota-hora{font-size:13px;font-weight:700;font-variant-numeric:tabular-nums;color:var(--muted)}
+.nota-hora{font-size:12.5px;font-weight:700;font-variant-numeric:tabular-nums;color:var(--cor, var(--muted))}
 .nota-txt strong{display:block;font-size:14.5px}
 .nota-txt small{display:block;color:var(--muted);font-size:13px;white-space:pre-wrap;overflow-wrap:anywhere}
 .nota-txt .nota-de{font-size:12px;margin-top:2px}
@@ -262,8 +294,7 @@ img.av{display:block;object-fit:cover;padding:0}
 .ver-txt small{display:block;color:var(--muted);font-size:12.5px}
 @media (max-width:780px){
   .ag-dia{min-height:58px;padding:4px}
-  .ag-nota{font-size:0;padding:0;height:5px;border-left-width:0;background:var(--accent)}
-  .ag-nota.comp{background:var(--pausado)}
+  .ag-nota{font-size:0;padding:0;height:5px;border-left-width:0;background:var(--cor, var(--accent))}
   .ag-mais{display:none}
   .ag-topo strong{min-width:0}
 }
@@ -703,7 +734,7 @@ button.cal-dia.alt:hover{background:var(--accent);filter:brightness(1.1)}
 #btn-recarregar svg{width:16px;height:16px}
 .girando svg{animation:girar .8s linear infinite}
 @keyframes girar{to{transform:rotate(360deg)}}
-@media (prefers-reduced-motion:reduce){*{transition:none!important}.editando .widget,.voo,.tremor,.girando svg{animation:none}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}.editando .widget,.voo,.tremor,.girando svg,.cutucada,.cutucando{animation:none}}
 </style>
 </head>
 <body>
@@ -888,7 +919,13 @@ button.cal-dia.alt:hover{background:var(--accent);filter:brightness(1.1)}
           <button class="btn primario" type="button" id="btn-cfg">Salvar link</button>
         </div>
       </div>
+      <div class="painel">
+        <h3>Chicote</h3>
+        <label class="check"><input type="checkbox" id="cfg-chicote">Mostrar o chicote flutuante</label>
+        <p class="meta">Segure o cabo e arraste rápido para estalar. Só aparece neste navegador.</p>
+      </div>
       <div class="painel" id="painel-dev"></div>
+      <div class="painel" id="painel-historico"></div>
       </div>
     </section>
 
@@ -965,8 +1002,9 @@ button.cal-dia.alt:hover{background:var(--accent);filter:brightness(1.1)}
           <button class="btn pequeno" type="button" id="ag-hoje">Hoje</button>
         </div>
       </div>
+      <div class="ferramentas" id="ag-filtros"></div>
       <div class="agenda" id="agenda"></div>
-      <div class="ev-legenda" style="margin-top:12px"><span><i style="background:var(--accent)"></i>Suas anotações</span><span><i style="background:var(--pausado)"></i>Compartilhadas por outras pessoas</span></div>
+      <p class="meta" style="margin-top:10px">Anotações de outras pessoas, compartilhadas com a equipe, aparecem com a borda tracejada.</p>
     </section>
 
     <section id="view-otimizacao" hidden>
@@ -1145,6 +1183,7 @@ button.cal-dia.alt:hover{background:var(--accent);filter:brightness(1.1)}
       <div class="bloco-cab"><h3 id="mn-form-titulo">Nova anotação</h3><button class="link" type="button" id="mn-nova" hidden>+ Nova anotação</button></div>
       <label>Título<input id="mn-titulo" placeholder="Ex.: Reunião com a Agrovital"></label>
       <label>Descrição <span class="opc">(opcional)</span><textarea id="mn-desc" rows="3"></textarea></label>
+      <label>Cliente <span class="opc">(opcional, quando for algo de um cliente)</span><select id="mn-cliente"></select></label>
       <div class="dupla">
         <label>Horário <span class="opc">(opcional)</span><input id="mn-hora" type="time"></label>
         <label class="check" style="align-self:end;padding-bottom:10px"><input type="checkbox" id="mn-comp">Compartilhar com a equipe</label>
@@ -1222,7 +1261,7 @@ const fmtDataHora = ts => new Date(ts).toLocaleString('pt-BR', { day:'2-digit', 
 const iniciais = nome => (nome || '?').trim().split(/\s+/).slice(0,2).map(p => p[0]).join('').toUpperCase();
 
 let sb;
-const state = { eu:null, colaboradores:[], clientes:[], problemas:[], chamados:[], filtro:'todos', busca:'', filtroCham:'pendentes', buscaCham:'', view:'clientes', aberto:null, problemaAberto:null, statusEscolhido:null, metricas:[], importacao:null, adsCliente:null, adsBusca:'', adsMostrarSaiu:false, adsFiltro:'todos', adsTipo:'alteracao', adsSituacao:new Map(), adsRegistros:[], editandoReg:null, listings:[], listingEventos:[], config:new Map(), filtroList:'abertos', buscaList:'', listingAberto:null, dev:null, verComo:null, dashEscopo:'minhas', adsDia:null, adsMes:hoje().slice(0,7), selFiltro:'ativos', selBusca:'', promocoes:[], eventos:[], eventoClientes:[], eventoSel:null, fPromo:'andamento', buscaPromo:'', promoEditando:null, promoTipo:null, fEv:'todas', buscaEv:'', eventoEditando:null, chamadoAberto:null, sadsFiltro:'todos', dashMes:hoje().slice(0,7), dashDia:null, dashIds:null, dashCalCli:null, notas:[], notaMes:hoje().slice(0,7), notaDia:null, notaEditando:null, otimPrefs:new Map(), otimBusca:'', otimSaiu:false, otimFiltro:'todos', verificacoes:[], verifClientes:[], verifSel:null, verifFiltro:'pendentes', verifBusca:'', verifEditando:null, sadsBusca:'', sadsSaiu:false, fProb:'abertos', buscaProb:'', gravProb:'' };
+const state = { eu:null, colaboradores:[], clientes:[], problemas:[], chamados:[], filtro:'todos', busca:'', filtroCham:'pendentes', buscaCham:'', view:'clientes', aberto:null, problemaAberto:null, statusEscolhido:null, metricas:[], importacao:null, adsCliente:null, adsBusca:'', adsMostrarSaiu:false, adsFiltro:'todos', adsTipo:'alteracao', adsSituacao:new Map(), adsRegistros:[], editandoReg:null, listings:[], listingEventos:[], config:new Map(), filtroList:'abertos', buscaList:'', listingAberto:null, dev:null, verComo:null, dashEscopo:'minhas', adsDia:null, adsMes:hoje().slice(0,7), selFiltro:'ativos', selBusca:'', promocoes:[], eventos:[], eventoClientes:[], eventoSel:null, fPromo:'andamento', buscaPromo:'', promoEditando:null, promoTipo:null, fEv:'todas', buscaEv:'', eventoEditando:null, chamadoAberto:null, sadsFiltro:'todos', dashMes:hoje().slice(0,7), dashDia:null, dashIds:null, dashCalCli:null, agTipos:new Set(['anotacao','ads','problema','chamado','listing','promocao','evento','verificacao']), agCli:null, notas:[], notaMes:hoje().slice(0,7), notaDia:null, notaEditando:null, otimPrefs:new Map(), otimBusca:'', otimSaiu:false, otimFiltro:'todos', verificacoes:[], verifClientes:[], verifSel:null, verifFiltro:'pendentes', verifBusca:'', verifEditando:null, sadsBusca:'', sadsSaiu:false, fProb:'abertos', buscaProb:'', gravProb:'' };
 const colab = id => state.colaboradores.find(c => c.id === id);
 const souHead = () => state.eu?.funcao === 'head';
 
@@ -1276,6 +1315,8 @@ async function entrarComSessao(sessao){
   aplicarOrdemNav();
   mostrar('app');
   await carregarDados();
+  iniciarCutucadas();
+  chicote.iniciar();
   try {
     const chave = sessionStorage.getItem('devChave');
     if (chave){ const { data:ok } = await sb.rpc('verificar_modo_dev', { p_chave:chave }); if (ok){ state.dev = { chave }; atualizarNav(); } else sessionStorage.removeItem('devChave'); }
@@ -1335,7 +1376,7 @@ $('#btn-verificar').addEventListener('click', async () => {
 // ---------- dados ----------
 async function carregarDados(){
   const [c, k, p, ch] = await Promise.all([
-    sb.from('colaboradores').select('id,nome,email,funcao,ativo,criado_em,foto_url,status_frase,status_atualizado_em').order('nome'),
+    sb.from('colaboradores').select('id,nome,email,funcao,ativo,criado_em,foto_url,status_frase,status_atualizado_em,humor').order('nome'),
     sb.from('clientes').select('*').order('nome'),
     sb.from('problemas').select('*').order('criado_em', { ascending:false }),
     sb.from('chamados').select('*').order('criado_em', { ascending:false }),
@@ -2396,6 +2437,8 @@ const linkPadrao = () => state.config.get('planilha_catalogacao_padrao')?.valor 
 const linkSeguro = u => /^https?:\/\//i.test(String(u || '').trim()) ? String(u).trim() : null;
 
 function renderConfig(){
+  renderHistorico();
+  $('#cfg-chicote').checked = chicote.visivelSalvo();
   renderPerfil();
   const v = document.documentElement.dataset.visual || 'atual';
   document.querySelectorAll('.visual').forEach(b => b.setAttribute('aria-checked', String(b.dataset.v === v)));
@@ -3801,12 +3844,20 @@ function renderPerfil(){
     <label>Seu nome<input id="pf-nome" value="${esc(state.eu.nome)}" autocomplete="name"></label>
     <label>Status <span class="opc">(uma frase que aparece no seu card da equipe)</span><input id="pf-status" maxlength="80" value="${esc(state.eu.status_frase)}" placeholder="Ex.: Focado no Prime Day esta semana"></label>
     <p class="meta" id="pf-cont"></p>
+    <label>Humor <span class="opc">(texto ou emojis, até 40 caracteres)</span><input id="pf-humor" maxlength="40" value="${esc(state.eu.humor)}" placeholder="Ex.: ☕ movido a café"></label>
+    <div class="emojis" aria-label="Emojis rápidos">${['😀','😎','🥳','🤩','😴','🤯','😤','🤒','☕','🔥','🚀','🎯','🧘','🎧','🍕','🌧️'].map(e => `<button type="button" class="emoji-btn" data-emoji="${e}" aria-label="Adicionar ${e}">${e}</button>`).join('')}</div>
     <p class="meta">${esc(state.eu.email)}, ${FUNCOES[state.eu.funcao] || 'sem função'}</p>
     <p id="pf-erro" class="erro-txt" role="alert"></p>
     <div class="acoes"><button class="btn primario" type="button" id="pf-salvar">Salvar perfil</button></div>`;
   const cont = () => $('#pf-cont').textContent = `${$('#pf-status').value.length} de 80 caracteres`;
   $('#pf-status').addEventListener('input', cont); cont();
-  $('#pf-salvar').addEventListener('click', () => salvarPerfil({ nome:$('#pf-nome').value, status:$('#pf-status').value }, 'Perfil salvo'));
+  $('#pf-salvar').addEventListener('click', () => salvarPerfil({ nome:$('#pf-nome').value, status:$('#pf-status').value, humor:$('#pf-humor').value }, 'Perfil salvo'));
+  document.querySelectorAll('.emoji-btn').forEach(b => b.addEventListener('click', () => {
+    const i = $('#pf-humor');
+    if ((i.value + b.dataset.emoji).length > 40) return;
+    i.value = (i.value + (i.value && !/\s$/.test(i.value) ? ' ' : '') + b.dataset.emoji).slice(0, 40);
+    i.focus();
+  }));
   $('#pf-remover')?.addEventListener('click', () => salvarPerfil({ foto:null }, 'Foto removida'));
   $('#pf-arquivo').addEventListener('change', async e => {
     const f = e.target.files[0];
@@ -3822,16 +3873,17 @@ function renderPerfil(){
     } catch (err){ $('#pf-erro').textContent = 'Não foi possível enviar a foto: ' + (err.message || err); }
   });
 }
-async function salvarPerfil({ nome, foto, status }, msg = 'Perfil salvo'){
+async function salvarPerfil({ nome, foto, status, humor }, msg = 'Perfil salvo'){
+  const novoHumor = humor !== undefined ? (humor.trim() || null) : (state.eu.humor || null);
   const novoStatus = status !== undefined ? (status.trim() || null) : (state.eu.status_frase || null);
   const novoNome = nome !== undefined ? nome.trim() : state.eu.nome;
   const novaFoto = foto !== undefined ? foto : (state.eu.foto_url || null);
   if (!novoNome){ $('#pf-erro').textContent = 'Informe seu nome.'; return; }
-  const { error } = await sb.rpc('atualizar_perfil', { p_nome:novoNome, p_foto_url:novaFoto, p_status:novoStatus });
+  const { error } = await sb.rpc('atualizar_perfil', { p_nome:novoNome, p_foto_url:novaFoto, p_status:novoStatus, p_humor:novoHumor });
   if (error){ $('#pf-erro').textContent = 'Não foi possível salvar: ' + error.message; return; }
-  state.eu = { ...state.eu, nome:novoNome, foto_url:novaFoto, status_frase:novoStatus };
+  state.eu = { ...state.eu, nome:novoNome, foto_url:novaFoto, status_frase:novoStatus, humor:novoHumor };
   const c = state.colaboradores.find(x => x.id === state.eu.id);
-  if (c){ c.nome = novoNome; c.foto_url = novaFoto; c.status_frase = novoStatus; }
+  if (c){ c.nome = novoNome; c.foto_url = novaFoto; c.status_frase = novoStatus; c.humor = novoHumor; }
   mostrarEuNoMenu(); renderPerfil();
   toast(msg);
 }
@@ -3886,9 +3938,44 @@ function renderVisaoAds(){
   }).join('') : `<p class="ajuda" style="padding:14px">Nenhum cliente com esse filtro.</p>`;
 }
 
-// ---------- anotações (agenda) ----------
+// ---------- anotações (agenda com tudo que tem data) ----------
 const hhmm = t => t ? String(t).slice(0, 5) : '';
-const ordemNota = (a, b) => (a.horario ? 0 : 1) - (b.horario ? 0 : 1) || hhmm(a.horario).localeCompare(hhmm(b.horario)) || a.titulo.localeCompare(b.titulo, 'pt-BR');
+const TIPOS_AG = { anotacao:'Anotações', ads:'Ads', problema:'Problemas', chamado:'Chamados', listing:'Listing', promocao:'Promoções', evento:'Eventos', verificacao:'Verificações' };
+const ORDEM_AG = Object.keys(TIPOS_AG);
+const diaLocal = ts => ts ? new Date(ts).toLocaleDateString('sv-SE') : null;
+
+// Junta tudo do sistema que tem uma data
+function itensAgenda(){
+  const L = [], me = state.eu.id;
+  state.notas.forEach(n => L.push({ tipo:'anotacao', data:n.data, hora:hhmm(n.horario), titulo:n.titulo, sub:n.descricao || '', cliente_id:n.cliente_id || null, nota:n, outra:n.autor !== me }));
+  state.adsRegistros.forEach(r => L.push({ tipo:'ads', data:r.data, titulo:r.tipo === 'demanda' ? (r.concluida ? 'Demanda de Ads concluída' : 'Demanda de Ads') : r.tipo === 'status' ? 'Status de Ads' : 'Alteração de Ads', sub:r.texto, cliente_id:r.cliente_id, acao:`irParaAds('${r.cliente_id}')` }));
+  state.problemas.forEach(p => {
+    L.push({ tipo:'problema', data:diaLocal(p.criado_em), titulo:`Problema registrado: ${p.titulo}`, sub:`Gravidade ${GRAVIDADE[p.gravidade].toLowerCase()}`, cliente_id:p.cliente_id, acao:`abrirProblema('${p.cliente_id}','${p.id}')` });
+    if (p.resolvido_em) L.push({ tipo:'problema', data:diaLocal(p.resolvido_em), titulo:`Problema resolvido: ${p.titulo}`, sub:'', cliente_id:p.cliente_id, acao:`abrirProblema('${p.cliente_id}','${p.id}')` });
+  });
+  state.chamados.forEach(ch => L.push({ tipo:'chamado', data:ch.data_chamado, titulo:tituloChamado(ch), sub:`Chamado ${ST_CHAM[ch.status].toLowerCase()}${ch.id_chamado ? `, ID ${ch.id_chamado}` : ''}`, cliente_id:ch.cliente_id, acao:`abrirChamado('${ch.id}')` }));
+  state.listings.forEach(l => {
+    const ac = `abrirListing('${l.id}')`;
+    L.push({ tipo:'listing', data:l.data_pedido, titulo:`Listing #${l.numero} solicitado`, sub:plProd(l.qtd_produtos), cliente_id:l.cliente_id, acao:ac });
+    if (l.data_criacao_listing) L.push({ tipo:'listing', data:l.data_criacao_listing, titulo:`Listing #${l.numero} criado`, sub:'', cliente_id:l.cliente_id, acao:ac });
+    if (l.concluido_em) L.push({ tipo:'listing', data:diaLocal(l.concluido_em), titulo:`Listing #${l.numero} concluído`, sub:'', cliente_id:l.cliente_id, acao:ac });
+  });
+  state.promocoes.forEach(p => {
+    const nome = `${TIPO_PROMO[p.tipo]} ${fmtPct(p.percentual)}`, ac = `abrirModalPromo('${p.id}')`;
+    L.push({ tipo:'promocao', data:p.data_inicio, titulo:`Começa: ${nome}`, sub:p.observacao || '', cliente_id:p.cliente_id, acao:ac });
+    if (p.data_fim !== p.data_inicio) L.push({ tipo:'promocao', data:p.data_fim, titulo:`Termina: ${nome}`, sub:p.observacao || '', cliente_id:p.cliente_id, acao:ac });
+  });
+  state.eventos.forEach(e => {
+    const ac = `state.eventoSel='${e.id}';irPara('eventos')`;
+    if (e.data_inicio) L.push({ tipo:'evento', data:e.data_inicio, titulo:`Começa o evento ${e.nome}`, sub:'', cliente_id:null, acao:ac });
+    if (e.data_fim && e.data_fim !== e.data_inicio) L.push({ tipo:'evento', data:e.data_fim, titulo:`Termina o evento ${e.nome}`, sub:'', cliente_id:null, acao:ac });
+  });
+  state.verificacoes.forEach(v => L.push({ tipo:'verificacao', data:diaLocal(v.criado_em), titulo:`Verificação criada: ${v.nome}`, sub:'', cliente_id:null, acao:`state.verifSel='${v.id}';irPara('verificacoes')` }));
+  return L.filter(i => i.data);
+}
+const filtrarAgenda = L => L.filter(i => state.agTipos.has(i.tipo) && (!state.agCli || i.cliente_id === state.agCli));
+const ordemItem = (a, b) => (a.hora ? 0 : 1) - (b.hora ? 0 : 1) || (a.hora || '').localeCompare(b.hora || '') || ORDEM_AG.indexOf(a.tipo) - ORDEM_AG.indexOf(b.tipo) || a.titulo.localeCompare(b.titulo, 'pt-BR');
+
 $('#ag-ant').addEventListener('click', () => mudarMesNota(-1));
 $('#ag-prox').addEventListener('click', () => mudarMesNota(1));
 $('#ag-hoje').addEventListener('click', () => { state.notaMes = hoje().slice(0, 7); renderAnotacoes(); });
@@ -3898,52 +3985,75 @@ function mudarMesNota(n){
   state.notaMes = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
   renderAnotacoes();
 }
+
 function renderAnotacoes(){
   const [a, m] = state.notaMes.split('-').map(Number);
   const dias = new Date(a, m, 0).getDate();
   const vazios = (new Date(a, m - 1, 1).getDay() + 6) % 7;
-  const hj = hoje(), me = state.eu.id;
+  const hj = hoje();
   const nm = new Date(a, m - 1, 1).toLocaleDateString('pt-BR', { month:'long', year:'numeric' });
   $('#ag-mes').textContent = nm.charAt(0).toUpperCase() + nm.slice(1);
-  const doMes = state.notas.filter(n => n.data.startsWith(state.notaMes));
+
+  const todosMes = itensAgenda().filter(i => i.data.startsWith(state.notaMes) && (!state.agCli || i.cliente_id === state.agCli));
+  const doMes = todosMes.filter(i => state.agTipos.has(i.tipo));
+
+  // filtros
+  const cont = {}; todosMes.forEach(i => cont[i.tipo] = (cont[i.tipo] || 0) + 1);
+  if (state.agCli && !state.clientes.some(c => c.id === state.agCli)) state.agCli = null;
+  const clientes = [...state.clientes].sort((x, y) => x.nome.localeCompare(y.nome, 'pt-BR'));
+  $('#ag-filtros').innerHTML = `
+    ${ORDEM_AG.map(t => `<button class="filtro" type="button" data-ag="${t}" data-tag="${t}" aria-pressed="${state.agTipos.has(t)}"><span class="ponto"></span>${TIPOS_AG[t]} <span class="n">${cont[t] || 0}</span></button>`).join('')}
+    <button class="link" type="button" id="ag-tudo">${state.agTipos.size === ORDEM_AG.length ? 'Só anotações' : 'Mostrar tudo'}</button>
+    <select id="ag-cli" aria-label="Filtrar por cliente" style="width:auto;margin-left:auto">
+      <option value="">Todos os clientes</option>
+      ${clientes.map(c => `<option value="${c.id}" ${c.id === state.agCli ? 'selected' : ''}>${esc(c.nome)}</option>`).join('')}
+    </select>`;
+  $('#ag-filtros').querySelectorAll('[data-tag]').forEach(b => b.addEventListener('click', () => {
+    const t = b.dataset.tag;
+    if (state.agTipos.has(t)) state.agTipos.delete(t); else state.agTipos.add(t);
+    renderAnotacoes();
+  }));
+  $('#ag-tudo').addEventListener('click', () => { state.agTipos = state.agTipos.size === ORDEM_AG.length ? new Set(['anotacao']) : new Set(ORDEM_AG); renderAnotacoes(); });
+  $('#ag-cli').addEventListener('change', e => { state.agCli = e.target.value || null; renderAnotacoes(); });
+
   const porDia = new Map();
-  doMes.forEach(n => { const d = +n.data.slice(8, 10); if (!porDia.has(d)) porDia.set(d, []); porDia.get(d).push(n); });
+  doMes.forEach(i => { const d = +i.data.slice(8, 10); if (!porDia.has(d)) porDia.set(d, []); porDia.get(d).push(i); });
   let html = ['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'].map(s => `<span class="ag-sem">${s}</span>`).join('');
   html += '<span class="ag-dia fora"></span>'.repeat(vazios);
   for (let d = 1; d <= dias; d++){
     const iso = `${state.notaMes}-${String(d).padStart(2, '0')}`;
-    const ns = (porDia.get(d) || []).sort(ordemNota);
-    html += `<button type="button" class="ag-dia ${iso === hj ? 'hoje' : ''}" onclick="abrirDiaNota('${iso}')" aria-label="${fmtDiaLongo(iso)}${ns.length ? `, ${ns.length} ${ns.length === 1 ? 'anotação' : 'anotações'}` : ''}">
+    const its = (porDia.get(d) || []).sort(ordemItem);
+    html += `<button type="button" class="ag-dia ${iso === hj ? 'hoje' : ''}" onclick="abrirDiaNota('${iso}')" aria-label="${fmtDiaLongo(iso)}${its.length ? `, ${its.length} ${its.length === 1 ? 'item' : 'itens'}` : ''}">
       <span class="ag-n">${d}</span>
-      ${ns.slice(0, 3).map(n => `<span class="ag-nota ${n.autor !== me ? 'comp' : ''}">${n.horario ? `<b>${hhmm(n.horario)}</b> ` : ''}${esc(n.titulo)}</span>`).join('')}
-      ${ns.length > 3 ? `<span class="ag-mais">+${ns.length - 3}</span>` : ''}
+      ${its.slice(0, 3).map(i => `<span class="ag-nota ${i.outra ? 'comp' : ''}" data-ag="${i.tipo}">${i.hora ? `<b>${i.hora}</b> ` : ''}${esc(i.titulo)}</span>`).join('')}
+      ${its.length > 3 ? `<span class="ag-mais">+${its.length - 3}</span>` : ''}
     </button>`;
   }
-  const resto = (7 - ((vazios + dias) % 7)) % 7;
-  html += '<span class="ag-dia fora"></span>'.repeat(resto);
+  html += '<span class="ag-dia fora"></span>'.repeat((7 - ((vazios + dias) % 7)) % 7);
   $('#agenda').innerHTML = html;
-  const minhas = doMes.filter(n => n.autor === me).length;
-  $('#resumo-notas').textContent = doMes.length
-    ? `${doMes.length} ${doMes.length === 1 ? 'anotação' : 'anotações'} neste mês${doMes.length - minhas ? `, ${doMes.length - minhas} da equipe` : ''}. Clique num dia para anotar.`
-    : 'Nenhuma anotação neste mês. Clique num dia para anotar.';
+  const cli = state.agCli && nomeCli(state.agCli);
+  $('#resumo-notas').textContent = `${doMes.length} ${doMes.length === 1 ? 'item' : 'itens'} neste mês${cli ? ` de ${cli}` : ''}. Clique num dia para ver tudo e anotar.`;
 }
 
 function abrirDiaNota(iso, notaId = null){
   state.notaDia = iso;
   state.notaEditando = notaId;
-  const me = state.eu.id;
-  const doDia = state.notas.filter(n => n.data === iso).sort(ordemNota);
+  const its = filtrarAgenda(itensAgenda().filter(i => i.data === iso)).sort(ordemItem);
   const n = notaId ? state.notas.find(x => x.id === notaId) : null;
   $('#mn-titulo-dia').textContent = fmtDiaLongo(iso);
-  $('#mn-lista').innerHTML = doDia.length ? doDia.map(x => {
-    const minha = x.autor === me, quem = colab(x.autor);
-    const corpo = `<span class="nota-hora">${x.horario ? hhmm(x.horario) : 'Dia todo'}</span>
-      <span class="nota-txt"><strong>${esc(x.titulo)}</strong>${x.descricao ? `<small>${esc(x.descricao)}</small>` : ''}
-      ${!minha ? `<small class="nota-de">De ${esc(quem?.nome || 'alguém da equipe')}</small>` : x.compartilhada ? '<small class="nota-de">Compartilhada com a equipe</small>' : ''}</span>`;
-    return minha
-      ? `<button type="button" class="nota-item ${x.id === notaId ? 'sel' : ''}" onclick="abrirDiaNota('${iso}','${x.id}')">${corpo}</button>`
-      : `<div class="nota-item outra">${corpo}</div>`;
-  }).join('') : '<p class="ajuda">Nenhuma anotação neste dia ainda.</p>';
+  $('#mn-lista').innerHTML = its.length ? its.map(i => {
+    const cli = i.cliente_id ? esc(nomeCli(i.cliente_id)) : '';
+    const corpo = `<span class="nota-hora">${i.hora || (i.tipo === 'anotacao' ? 'Dia todo' : TIPOS_AG[i.tipo].replace(/s$/, ''))}</span>
+      <span class="nota-txt"><strong>${esc(i.titulo)}</strong>${cli ? `<small class="nota-de">${cli}</small>` : ''}${i.sub ? `<small>${esc(i.sub)}</small>` : ''}
+      ${i.tipo === 'anotacao' && i.outra ? `<small class="nota-de">De ${esc(colab(i.nota.autor)?.nome || 'alguém da equipe')}</small>` : i.tipo === 'anotacao' && i.nota.compartilhada ? '<small class="nota-de">Compartilhada com a equipe</small>' : ''}</span>`;
+    if (i.tipo === 'anotacao') return i.outra
+      ? `<div class="nota-item outra" data-ag="anotacao">${corpo}</div>`
+      : `<button type="button" class="nota-item ${i.nota.id === notaId ? 'sel' : ''}" data-ag="anotacao" onclick="abrirDiaNota('${iso}','${i.nota.id}')">${corpo}</button>`;
+    return `<button type="button" class="nota-item" data-ag="${i.tipo}" onclick="$('#modal-nota').close();${i.acao}">${corpo}</button>`;
+  }).join('') : `<p class="ajuda">Nada neste dia${state.agCli ? ' para este cliente' : ''} com os filtros atuais.</p>`;
+  const clientes = state.clientes.filter(c => c.status !== 'saiu' || c.id === n?.cliente_id).sort((x, y) => x.nome.localeCompare(y.nome, 'pt-BR'));
+  const cliPadrao = n ? n.cliente_id : state.agCli;
+  $('#mn-cliente').innerHTML = `<option value="">Sem cliente</option>` + clientes.map(c => `<option value="${c.id}" ${c.id === cliPadrao ? 'selected' : ''}>${esc(c.nome)}</option>`).join('');
   $('#mn-form-titulo').textContent = n ? 'Editar anotação' : 'Nova anotação';
   $('#mn-titulo').value = n?.titulo || '';
   $('#mn-desc').value = n?.descricao || '';
@@ -3964,7 +4074,7 @@ $('#form-nota').addEventListener('submit', async e => {
   const erro = $('#mn-erro'); erro.textContent = '';
   const titulo = $('#mn-titulo').value.trim();
   if (!titulo){ erro.textContent = 'Dê um título para a anotação.'; $('#mn-titulo').focus(); return; }
-  const dados = { titulo, descricao:$('#mn-desc').value.trim() || null, horario:$('#mn-hora').value || null, compartilhada:$('#mn-comp').checked };
+  const dados = { titulo, descricao:$('#mn-desc').value.trim() || null, horario:$('#mn-hora').value || null, compartilhada:$('#mn-comp').checked, cliente_id:$('#mn-cliente').value || null };
   const btn = $('#mn-salvar'); btn.disabled = true;
   const editando = state.notaEditando;
   const res = editando
@@ -3973,6 +4083,7 @@ $('#form-nota').addEventListener('submit', async e => {
   btn.disabled = false;
   if (res.error){ erro.textContent = 'Não foi possível salvar: ' + res.error.message; return; }
   guardarLocal(state.notas, res.data);
+  state.agTipos.add('anotacao');
   renderAnotacoes();
   abrirDiaNota(state.notaDia);
   toast(editando ? 'Anotação salva' : 'Anotação adicionada');
@@ -4171,6 +4282,286 @@ $('#mv-excluir').addEventListener('click', async () => {
   state.verifClientes = state.verifClientes.filter(x => x.verificacao_id !== v.id);
   $('#modal-verif').close(); renderVerificacoes(); toast('Verificação excluída');
 });
+
+// ---------- som (Web Audio, sem arquivos) ----------
+let audioCtx = null;
+function ctxAudio(){
+  const C = window.AudioContext || window.webkitAudioContext;
+  if (!C) return null;
+  if (!audioCtx) audioCtx = new C();
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+  return audioCtx;
+}
+// O navegador só libera som depois do primeiro clique na página
+document.addEventListener('pointerdown', () => ctxAudio(), { once:true });
+function somCutucada(){
+  const c = ctxAudio(); if (!c) return;
+  const t = c.currentTime;
+  [[0, 880, 620], [0.2, 700, 470]].forEach(([d, f1, f2]) => {
+    const o = c.createOscillator(), g = c.createGain();
+    o.type = 'triangle';
+    o.frequency.setValueAtTime(f1, t + d);
+    o.frequency.exponentialRampToValueAtTime(f2, t + d + 0.16);
+    g.gain.setValueAtTime(0.0001, t + d);
+    g.gain.exponentialRampToValueAtTime(0.4, t + d + 0.02);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + d + 0.18);
+    o.connect(g).connect(c.destination);
+    o.start(t + d); o.stop(t + d + 0.2);
+  });
+}
+function somEstalo(){
+  const c = ctxAudio(); if (!c) return;
+  const t = c.currentTime, len = Math.floor(0.11 * c.sampleRate);
+  const buf = c.createBuffer(1, len, c.sampleRate), d = buf.getChannelData(0);
+  for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 5);
+  const s = c.createBufferSource(); s.buffer = buf;
+  const hp = c.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 1500;
+  const g = c.createGain(); g.gain.setValueAtTime(1, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.11);
+  s.connect(hp).connect(g).connect(c.destination);
+  s.start(t);
+}
+
+// ---------- cutucar ----------
+const ultimaCutucada = new Map();
+const cutucadasTratadas = new Set();
+async function cutucar(id){
+  const p = colab(id);
+  const agora = Date.now();
+  if (agora - (ultimaCutucada.get(id) || 0) < 10000){ toast('Espere alguns segundos para cutucar de novo.'); return; }
+  ultimaCutucada.set(id, agora);
+  const { error } = await sb.from('cutucadas').insert({ para:id });
+  if (error){ ultimaCutucada.delete(id); toast('Não foi possível cutucar: ' + error.message, true); return; }
+  toast(`Você cutucou ${p?.nome?.split(' ')[0] || 'a pessoa'} 👉`);
+}
+async function receberCutucada(c, silencioso = false){
+  if (!c || c.para !== state.eu?.id || c.visto || cutucadasTratadas.has(c.id)) return;
+  cutucadasTratadas.add(c.id);
+  const de = colab(c.de);
+  const antiga = Date.now() - new Date(c.criado_em).getTime() > 2 * 60 * 1000;
+  if (!silencioso && !antiga){ somCutucada(); navigator.vibrate?.([80, 60, 80]); }
+  mostrarCutucada(de, antiga);
+  await sb.from('cutucadas').update({ visto:true }).eq('id', c.id);
+}
+function mostrarCutucada(de, antiga){
+  const el = document.createElement('div');
+  el.className = 'cutucada';
+  el.setAttribute('role', 'status');
+  el.innerHTML = `${avatar(de)}<span><strong>${esc(de?.nome || 'Alguém da equipe')}</strong> ${antiga ? 'te cutucou enquanto você estava fora' : 'te cutucou!'} 👉</span><button type="button" class="fechar" aria-label="Fechar">×</button>`;
+  document.body.appendChild(el);
+  el.querySelector('.fechar').addEventListener('click', () => el.remove());
+  setTimeout(() => el.classList.add('saindo'), 6000);
+  setTimeout(() => el.remove(), 6500);
+  if (!antiga && !matchMedia('(prefers-reduced-motion: reduce)').matches){
+    const pr = $('.principal'); pr.classList.remove('tremor'); void pr.offsetWidth; pr.classList.add('tremor');
+    setTimeout(() => pr.classList.remove('tremor'), 400);
+  }
+  const titulo = document.title; document.title = '👉 Você foi cutucado!';
+  setTimeout(() => document.title = titulo, 4000);
+}
+async function verificarCutucadas(silencioso = false){
+  if (!state.eu) return;
+  const { data } = await sb.from('cutucadas').select('*').eq('para', state.eu.id).eq('visto', false).order('criado_em');
+  for (const c of data || []) await receberCutucada(c, silencioso);
+}
+let canalCutucadas = null;
+function iniciarCutucadas(){
+  verificarCutucadas(true);
+  try {
+    if (!canalCutucadas && sb.channel){
+      canalCutucadas = sb.channel('cutucadas-' + state.eu.id)
+        .on('postgres_changes', { event:'INSERT', schema:'public', table:'cutucadas', filter:`para=eq.${state.eu.id}` }, p => receberCutucada(p.new))
+        .subscribe();
+    }
+  } catch {}
+  // reserva, caso o Realtime não esteja disponível
+  setInterval(() => verificarCutucadas(), 25000);
+}
+
+// ---------- chicote flutuante ----------
+const chicote = (() => {
+  const N = 22, SEG = 9;
+  let el, cabo, tela, ctx, pts = [], ant = [], raf = null, calmo = 0, arrastando = false, dpr = 1, ultEstalo = 0, efeitos = [], pos = null, off = { x:0, y:0 };
+  const ancora = () => { const r = cabo.getBoundingClientRect(); return { x:r.left + r.width / 2, y:r.bottom - 4 }; };
+  function montar(){
+    if (el) return;
+    el = document.createElement('div');
+    el.className = 'chicote';
+    el.innerHTML = `
+      <button type="button" class="chicote-cabo" aria-label="Chicote: segure e arraste rápido para estalar">
+        <svg viewBox="0 0 24 64" aria-hidden="true"><rect x="7" y="2" width="10" height="9" rx="4" fill="#C9A15B"/><rect x="6" y="10" width="12" height="44" rx="5" fill="#5B3418"/><path d="M6 18h12M6 26h12M6 34h12M6 42h12" stroke="#3A1F0C" stroke-width="2"/><rect x="8" y="53" width="8" height="9" rx="3" fill="#C9A15B"/></svg>
+      </button>
+      <button type="button" class="chicote-fechar" aria-label="Esconder o chicote">×</button>`;
+    tela = document.createElement('canvas');
+    tela.className = 'chicote-tela';
+    document.body.append(tela, el);
+    cabo = el.querySelector('.chicote-cabo');
+    ctx = tela.getContext('2d');
+    try { pos = JSON.parse(localStorage.getItem('chicote-pos') || 'null'); } catch {}
+    if (!pos) pos = { x:innerWidth - 70, y:Math.round(innerHeight * 0.35) };
+    posicionar();
+    redimensionar();
+    const a = ancora();
+    pts = Array.from({ length:N }, (_, i) => ({ x:a.x, y:a.y + i * SEG }));
+    ant = pts.map(p => ({ ...p }));
+    cabo.addEventListener('pointerdown', inicio);
+    el.querySelector('.chicote-fechar').addEventListener('click', () => { definirVisivel(false); toast('Chicote escondido. Dá para trazer de volta em Configurações.'); });
+    addEventListener('resize', () => { redimensionar(); posicionar(); acordar(); });
+    acordar();
+  }
+  function posicionar(){
+    pos.x = Math.max(8, Math.min(innerWidth - 48, pos.x));
+    pos.y = Math.max(8, Math.min(innerHeight - 90, pos.y));
+    el.style.left = pos.x + 'px'; el.style.top = pos.y + 'px';
+  }
+  function redimensionar(){
+    dpr = window.devicePixelRatio || 1;
+    tela.width = innerWidth * dpr; tela.height = innerHeight * dpr;
+    tela.style.width = innerWidth + 'px'; tela.style.height = innerHeight + 'px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  function inicio(e){
+    e.preventDefault();
+    ctxAudio();
+    arrastando = true;
+    cabo.setPointerCapture(e.pointerId);
+    off = { x:e.clientX - pos.x, y:e.clientY - pos.y };
+    el.classList.add('segurando');
+    const mover = ev => { pos.x = ev.clientX - off.x; pos.y = ev.clientY - off.y; posicionar(); acordar(); };
+    const fim = () => {
+      arrastando = false; el.classList.remove('segurando');
+      cabo.removeEventListener('pointermove', mover); cabo.removeEventListener('pointerup', fim); cabo.removeEventListener('pointercancel', fim);
+      try { localStorage.setItem('chicote-pos', JSON.stringify(pos)); } catch {}
+    };
+    cabo.addEventListener('pointermove', mover);
+    cabo.addEventListener('pointerup', fim);
+    cabo.addEventListener('pointercancel', fim);
+    acordar();
+  }
+  function acordar(){ calmo = 0; if (!raf) raf = requestAnimationFrame(passo); }
+  function estalar(x, y){
+    const agora = performance.now();
+    if (agora - ultEstalo < 320) return;
+    ultEstalo = agora;
+    somEstalo();
+    navigator.vibrate?.(25);
+    efeitos.push({ x, y, t:agora, ang:Math.random() * Math.PI });
+  }
+  function passo(){
+    const a = ancora();
+    // física de corda (Verlet): cada ponto segue o anterior com atraso, e a ponta acelera
+    let mov = 0;
+    for (let i = 1; i < N; i++){
+      const p = pts[i], q = ant[i];
+      const vx = (p.x - q.x) * 0.985, vy = (p.y - q.y) * 0.985;
+      q.x = p.x; q.y = p.y;
+      p.x += vx; p.y += vy + 0.55;
+      mov += Math.abs(vx) + Math.abs(vy);
+    }
+    pts[0].x = a.x; pts[0].y = a.y; ant[0].x = a.x; ant[0].y = a.y;
+    for (let k = 0; k < 12; k++){
+      for (let i = 0; i < N - 1; i++){
+        const p = pts[i], q = pts[i + 1];
+        const dx = q.x - p.x, dy = q.y - p.y, dist = Math.hypot(dx, dy) || 0.001;
+        const dif = (dist - SEG) / dist;
+        if (i === 0){ q.x -= dx * dif; q.y -= dy * dif; }
+        else { p.x += dx * dif * 0.5; p.y += dy * dif * 0.5; q.x -= dx * dif * 0.5; q.y -= dy * dif * 0.5; }
+      }
+    }
+    const ponta = pts[N - 1], pa = ant[N - 1];
+    const vel = Math.hypot(ponta.x - pa.x, ponta.y - pa.y);
+    if (vel > 34) estalar(ponta.x, ponta.y);
+    desenhar();
+    calmo = (!arrastando && mov < 0.6 && !efeitos.length) ? calmo + 1 : 0;
+    raf = calmo > 90 ? null : requestAnimationFrame(passo);
+  }
+  function desenhar(){
+    ctx.clearRect(0, 0, innerWidth, innerHeight);
+    ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    for (let i = 0; i < N - 1; i++){
+      ctx.strokeStyle = i < 3 ? '#4A2A12' : '#3B2314';
+      ctx.lineWidth = Math.max(1.2, 5.5 - i * 0.22);
+      ctx.beginPath(); ctx.moveTo(pts[i].x, pts[i].y); ctx.lineTo(pts[i + 1].x, pts[i + 1].y); ctx.stroke();
+    }
+    const agora = performance.now();
+    efeitos = efeitos.filter(f => agora - f.t < 420);
+    efeitos.forEach(f => {
+      const k = (agora - f.t) / 420;
+      ctx.save();
+      ctx.globalAlpha = 1 - k;
+      ctx.strokeStyle = '#FFC21A'; ctx.lineWidth = 2.5;
+      for (let j = 0; j < 8; j++){
+        const an = f.ang + j * Math.PI / 4, r1 = 6 + k * 14, r2 = 14 + k * 30;
+        ctx.beginPath(); ctx.moveTo(f.x + Math.cos(an) * r1, f.y + Math.sin(an) * r1); ctx.lineTo(f.x + Math.cos(an) * r2, f.y + Math.sin(an) * r2); ctx.stroke();
+      }
+      ctx.fillStyle = '#E0441C';
+      ctx.font = `800 ${18 + k * 8}px 'Instrument Sans', system-ui, sans-serif`;
+      ctx.textAlign = 'center';
+      ctx.fillText('CRACK!', f.x, f.y - 22 - k * 18);
+      ctx.restore();
+    });
+  }
+  function definirVisivel(v){
+    try { localStorage.setItem('chicote', v ? '1' : '0'); } catch {}
+    if (v){ if (!el) montar(); el.hidden = false; tela.hidden = false; acordar(); }
+    else if (el){ el.hidden = true; tela.hidden = true; }
+    const cb = $('#cfg-chicote'); if (cb) cb.checked = v;
+  }
+  const visivelSalvo = () => { try { return localStorage.getItem('chicote') !== '0'; } catch { return true; } };
+  return { iniciar(){ if (visivelSalvo()) definirVisivel(true); }, definirVisivel, visivelSalvo };
+})();
+
+$('#cfg-chicote').addEventListener('change', e => chicote.definirVisivel(e.target.checked));
+
+// ---------- histórico de atualizações ----------
+const ATUALIZACOES = [
+  { v:'1.14', data:'23/10/2026', itens:[
+    'Anotações viraram a agenda de tudo que tem data: Ads, problemas, chamados, listings, promoções, eventos e verificações, com filtro por tipo e por cliente.',
+    'Anotações podem ser ligadas a um cliente.',
+    'Campo de humor no perfil, com emojis, que aparece no card da equipe.',
+    'Botão de cutucar na aba Equipe, com aviso sonoro só para quem foi cutucado.',
+    'Chicote flutuante: segure e arraste rápido para estalar.',
+    'Este histórico de atualizações.' ]},
+  { v:'1.13', data:'23/10/2026', itens:[
+    'Aba Anotações com calendário e anotações por dia, com horário opcional e opção de compartilhar com a equipe.',
+    'Aba Otimização com as preferências de listing de cada cliente em cards.',
+    'Verificação em massa na aba Ads, com todos os clientes ativos e uma caixa para concluir cada um.' ]},
+  { v:'1.12', data:'23/10/2026', itens:[ 'Calendário de alterações no Dashboard, com filtro por cliente.' ]},
+  { v:'1.11', data:'22/10/2026', itens:[
+    'Animação na aba Equipe quando alguém muda o status e você ainda não viu.',
+    'Botão de recarregar os dados no menu.' ]},
+  { v:'1.10', data:'22/10/2026', itens:[
+    'Status de Ads por cliente (Ativo, Pausado, Não começou, Não tem), registrado sozinho na timeline.',
+    'Visão geral do status de Ads de todas as contas.' ]},
+  { v:'1.9', data:'22/10/2026', itens:[
+    'Aba Equipe em cards, visível para todos, com foto e status.',
+    'Mudança de função e de acesso só pelo modo dev.' ]},
+  { v:'1.8', data:'22/10/2026', itens:[
+    'Chamados com ID, códigos de produto e e-mails de retorno.',
+    'Perfil com nome e foto.' ]},
+  { v:'1.7', data:'22/10/2026', itens:[
+    'Chamado criado só com cliente e data, e ligado a um problema depois.',
+    'Aba Problemas.' ]},
+  { v:'1.6', data:'22/10/2026', itens:[
+    'Aba Ads reorganizada em quadros: contexto, timeline, calendário, demandas e métricas.',
+    'Menu e quadros reorganizáveis, arrastando.',
+    'Abas de Promoções e Eventos.' ]},
+  { v:'1.5', data:'22/10/2026', itens:[
+    'Pop-ups no centro da tela.',
+    'Temas Fênix minimalista e Fênix chamativo.',
+    'Dashboard por função, modo dev e demanda de campanha a partir de listing concluído.' ]},
+  { v:'1.4', data:'22/10/2026', itens:[ 'Aba Listing com a rota de criação e a planilha padrão nas Configurações.' ]},
+  { v:'1.3', data:'21/10/2026', itens:[ 'Aba Ads com situação, alterações e demandas em timeline.' ]},
+  { v:'1.2', data:'21/10/2026', itens:[ 'Importação da planilha de faturamento, ACOS e TACOS, com tendência por cliente.' ]},
+  { v:'1.1', data:'21/10/2026', itens:[ 'Problemas e chamados por cliente.' ]},
+  { v:'1.0', data:'21/10/2026', itens:[ 'Login por colaborador, funções, cadastro de clientes e status da conta.' ]},
+];
+function renderHistorico(){
+  const bloco = a => `<li class="hist-item"><div class="hist-cab"><strong>Versão ${a.v}</strong><span class="meta">${a.data}</span></div><ul>${a.itens.map(t => `<li>${esc(t)}</li>`).join('')}</ul></li>`;
+  $('#painel-historico').innerHTML = `
+    <h3>Histórico de atualizações</h3>
+    <ol class="hist">${ATUALIZACOES.slice(0, 3).map(bloco).join('')}</ol>
+    <details class="hist-mais"><summary>Ver versões anteriores</summary><ol class="hist">${ATUALIZACOES.slice(3).map(bloco).join('')}</ol></details>`;
+}
 
 // ---------- aba de chamados ----------
 const tituloChamado = ch => ch.assunto || `Chamado de ${fmtData(ch.data_chamado)}`;
@@ -4442,12 +4833,13 @@ function renderEquipe(){
       ${lista.map(p => {
         const n = contasDe(p.id), eu = p.id === state.eu.id;
         return `<article class="membro-card ${p.ativo ? '' : 'inativo'}" data-f="${p.funcao || ''}" data-id="${p.id}">
-          <div class="mc-foto">${avatar(p)}</div>
+          <div class="mc-foto">${avatar(p)}${p.humor ? `<span class="mc-humor" title="Humor de ${esc(p.nome)}">${esc(p.humor)}</span>` : ''}</div>
           <strong class="mc-nome">${esc(p.nome)}${eu ? ' <span class="meta">(você)</span>' : ''}</strong>
           <span class="mc-funcao">${FUNCOES[p.funcao] || 'Sem função'}</span>
           ${novos.has(p.id) ? '<span class="mc-novo">Status novo</span>' : ''}
           <p class="mc-status">${p.status_frase ? `“${esc(p.status_frase)}”` : '<span class="meta">Sem status</span>'}</p>
           <small class="meta">${n} ${n === 1 ? 'conta' : 'contas'}${p.ativo ? '' : ', sem acesso'}</small>
+          ${!eu && p.ativo ? `<button class="btn pequeno cutucar" type="button" data-cutucar="${p.id}">👉 Cutucar</button>` : ''}
           ${dev ? `<div class="mc-admin">
             <select data-funcao="${p.id}" aria-label="Função de ${esc(p.nome)}">
               <option value="" ${!p.funcao ? 'selected' : ''}>Escolha a função</option>
@@ -4470,6 +4862,10 @@ function renderEquipe(){
     });
     try { localStorage.setItem(chaveVistos, JSON.stringify(vistos)); } catch {}
   }
+  el.querySelectorAll('[data-cutucar]').forEach(b => b.addEventListener('click', () => {
+    b.classList.remove('cutucando'); void b.offsetWidth; b.classList.add('cutucando');
+    cutucar(b.dataset.cutucar);
+  }));
   el.querySelectorAll('[data-remover]').forEach(b => b.addEventListener('click', () => {
     const p = colab(b.dataset.remover);
     if (confirm(`Remover o acesso de ${p.nome}? A pessoa continua vinculada às contas, mas não consegue mais entrar.`))
@@ -4492,7 +4888,7 @@ async function salvarColaborador(id, funcao, ativo, msg){
   const { error } = await sb.rpc('dev_definir_colaborador', { p_chave:state.dev.chave, p_id:id, p_funcao:funcao || null, p_ativo:ativo });
   if (error){ toast('Não foi possível salvar: ' + error.message, true); return; }
   if (id === state.eu.id) await atualizarEu();
-  const r = await sb.from('colaboradores').select('id,nome,email,funcao,ativo,criado_em,foto_url,status_frase,status_atualizado_em').order('nome');
+  const r = await sb.from('colaboradores').select('id,nome,email,funcao,ativo,criado_em,foto_url,status_frase,status_atualizado_em,humor').order('nome');
   if (!r.error) state.colaboradores = r.data;
   renderEquipe();
   toast(msg);
