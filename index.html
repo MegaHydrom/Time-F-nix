@@ -222,6 +222,51 @@ img.av{display:block;object-fit:cover;padding:0}
 .membro-card[data-f="head"] .mc-funcao{color:var(--accent-ink);background:var(--accent)}
 .mc-status{font-size:14px;color:var(--ink);margin:4px 0 0;overflow-wrap:anywhere;line-height:1.4}
 .membro-card{position:relative}
+.ag-topo{display:flex;align-items:center;gap:10px}
+.ag-topo strong{font-size:16px;min-width:150px;text-align:center}
+.agenda{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--surface)}
+.ag-sem{padding:9px 6px;font-size:12.5px;font-weight:600;color:var(--muted);text-align:center;background:var(--surface-2);border-bottom:1px solid var(--line)}
+.ag-dia{min-height:112px;border:0;border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:6px;text-align:left;background:none;cursor:pointer;display:flex;flex-direction:column;gap:3px;align-items:stretch;min-width:0;color:var(--ink)}
+.agenda > :nth-child(7n){border-right:0}
+.ag-dia:hover{background:var(--surface-2)}
+.ag-dia.fora{background:var(--surface-2);opacity:.45;cursor:default}
+.ag-n{font-size:13px;font-weight:600;width:26px;height:26px;display:grid;place-items:center;border-radius:50%;flex:none}
+.ag-dia.hoje .ag-n{background:var(--accent);color:var(--accent-ink)}
+.ag-nota{font-size:12px;background:var(--accent-soft);border-radius:5px;padding:2px 6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;border-left:3px solid var(--accent)}
+.ag-nota.comp{border-left-color:var(--pausado)}
+.ag-nota b{font-weight:700}
+.ag-mais{font-size:11.5px;color:var(--muted);padding-left:4px}
+.nota-lista{display:grid;gap:6px;max-height:34vh;overflow-y:auto}
+.nota-item{display:grid;grid-template-columns:62px minmax(0,1fr);gap:10px;align-items:start;text-align:left;width:100%;background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:10px 12px;cursor:pointer;border-left:3px solid var(--accent)}
+.nota-item.outra{cursor:default;border-left-color:var(--pausado)}
+.nota-item.sel{box-shadow:inset 0 0 0 1px var(--accent);border-color:var(--accent)}
+.nota-hora{font-size:13px;font-weight:700;font-variant-numeric:tabular-nums;color:var(--muted)}
+.nota-txt strong{display:block;font-size:14.5px}
+.nota-txt small{display:block;color:var(--muted);font-size:13px;white-space:pre-wrap;overflow-wrap:anywhere}
+.nota-txt .nota-de{font-size:12px;margin-top:2px}
+.nota-form{display:grid;gap:12px;border-top:1px solid var(--line);padding-top:14px}
+.otim-grade{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
+.otim-card{display:grid;gap:6px;align-content:start;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;cursor:pointer;min-height:150px;box-shadow:inset 0 3px 0 var(--cor)}
+.otim-card:hover{border-color:var(--accent)}
+.oc-topo{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
+.oc-topo strong{font-size:15.5px;overflow-wrap:anywhere}
+.oc-texto{font-size:14px;color:var(--ink);display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;white-space:pre-wrap}
+.otim-card.vazio-card .oc-texto{color:var(--muted);font-style:italic}
+.verif-prog{font-size:14px}
+.ver-linha{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line);cursor:pointer;color:var(--ink);font-size:14px}
+.ver-linha:last-child{border-bottom:0}
+.ver-linha:hover{background:var(--surface-2)}
+.ver-linha input{width:20px;height:20px;accent-color:var(--ativo);margin:0}
+.ver-linha.feito .ver-txt strong{text-decoration:line-through;color:var(--muted)}
+.ver-txt strong{display:block;font-weight:600;font-size:15px}
+.ver-txt small{display:block;color:var(--muted);font-size:12.5px}
+@media (max-width:780px){
+  .ag-dia{min-height:58px;padding:4px}
+  .ag-nota{font-size:0;padding:0;height:5px;border-left-width:0;background:var(--accent)}
+  .ag-nota.comp{background:var(--pausado)}
+  .ag-mais{display:none}
+  .ag-topo strong{min-width:0}
+}
 .mc-novo{font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--accent-ink);background:var(--accent);border-radius:999px;padding:2px 9px}
 .mc-admin{display:grid;gap:8px;width:100%;margin-top:8px;padding-top:12px;border-top:1px solid var(--line)}
 .mc-admin select{font-size:14px;padding:7px 9px}
@@ -718,9 +763,11 @@ button.cal-dia.alt:hover{background:var(--accent);filter:brightness(1.1)}
     <div class="marca"><span class="selo"><b></b><b></b><b></b></span>Carteira</div>
     <nav>
       <button class="nav-item" data-view="dashboard">Dashboard</button>
+      <button class="nav-item" data-view="anotacoes">Anotações</button>
       <button class="nav-item" data-view="clientes">Clientes</button>
       <button class="nav-item" data-view="ads">Ads</button>
       <button class="nav-item" data-view="listing">Listing</button>
+      <button class="nav-item" data-view="otimizacao">Otimização</button>
       <button class="nav-item" data-view="promocoes">Promoções</button>
       <button class="nav-item" data-view="problemas">Problemas</button>
       <button class="nav-item" data-view="chamados">Chamados</button>
@@ -773,6 +820,7 @@ button.cal-dia.alt:hover{background:var(--accent);filter:brightness(1.1)}
           <p>Contexto, alterações, demandas e resultados de cada cliente.</p>
         </div>
         <div class="dash-ctrl">
+          <button class="btn" type="button" id="btn-verif-ads">Verificação em massa</button>
           <button class="btn" type="button" id="btn-visao-ads" aria-haspopup="dialog">Status das contas</button>
           <button class="btn seletor-cli" type="button" id="btn-sel-cli" aria-haspopup="dialog">
             <span><strong id="ads-cliente-nome">Escolher cliente</strong><small id="ads-cliente-sub">Clique para ver a lista de clientes</small></span>
@@ -902,6 +950,52 @@ button.cal-dia.alt:hover{background:var(--accent);filter:brightness(1.1)}
         <div class="t-cab cab-prob"><span>Problema</span><span>Gravidade</span><span>Status</span><span>Responsável</span><span>Chamados</span><span>Tempo</span></div>
         <div id="lista-prob"></div>
       </div>
+    </section>
+
+    <section id="view-anotacoes" hidden>
+      <div class="cabeca">
+        <div>
+          <h1>Anotações</h1>
+          <p id="resumo-notas"></p>
+        </div>
+        <div class="ag-topo">
+          <button class="cal-nav" type="button" id="ag-ant" aria-label="Mês anterior">‹</button>
+          <strong id="ag-mes"></strong>
+          <button class="cal-nav" type="button" id="ag-prox" aria-label="Próximo mês">›</button>
+          <button class="btn pequeno" type="button" id="ag-hoje">Hoje</button>
+        </div>
+      </div>
+      <div class="agenda" id="agenda"></div>
+      <div class="ev-legenda" style="margin-top:12px"><span><i style="background:var(--accent)"></i>Suas anotações</span><span><i style="background:var(--pausado)"></i>Compartilhadas por outras pessoas</span></div>
+    </section>
+
+    <section id="view-otimizacao" hidden>
+      <div class="cabeca">
+        <div>
+          <h1>Otimização de listing</h1>
+          <p>As preferências de cada cliente para as otimizações. Clique num card para anotar.</p>
+        </div>
+      </div>
+      <div class="ferramentas">
+        <button class="filtro" type="button" data-fotim="todos" data-estado="todos" aria-pressed="true">Todos <span class="n">0</span></button>
+        <button class="filtro" type="button" data-fotim="com" data-estado="concluido" aria-pressed="false"><span class="ponto"></span>Com preferências <span class="n">0</span></button>
+        <button class="filtro" type="button" data-fotim="sem" data-estado="a_abrir" aria-pressed="false"><span class="ponto"></span>Sem preferências <span class="n">0</span></button>
+        <label class="check"><input type="checkbox" id="otim-saiu">Mostrar clientes que saíram</label>
+        <input class="busca" id="busca-otim" type="search" placeholder="Buscar cliente ou preferência" aria-label="Buscar cliente ou preferência">
+      </div>
+      <div class="otim-grade" id="otim-grade"></div>
+    </section>
+
+    <section id="view-verificacoes" hidden>
+      <div class="cabeca">
+        <div>
+          <button class="voltar" type="button" id="btn-voltar-ads">Voltar para Ads</button>
+          <h1>Verificação em massa</h1>
+          <p>Crie uma verificação e marque cada cliente ativo conforme for concluindo.</p>
+        </div>
+        <button class="btn primario" type="button" id="btn-nova-verif">Nova verificação</button>
+      </div>
+      <div id="verif-conteudo"></div>
     </section>
 
     <section id="view-chamados" hidden>
@@ -1043,6 +1137,42 @@ button.cal-dia.alt:hover{background:var(--accent);filter:brightness(1.1)}
   </form>
 </dialog>
 
+<dialog id="modal-nota" class="modal modal-largo" aria-labelledby="mn-titulo-dia">
+  <div class="modal-corpo">
+    <div class="bloco-cab"><h2 id="mn-titulo-dia"></h2><button class="fechar" type="button" id="mn-fechar" aria-label="Fechar">×</button></div>
+    <div id="mn-lista" class="nota-lista"></div>
+    <form id="form-nota" class="nota-form" novalidate>
+      <div class="bloco-cab"><h3 id="mn-form-titulo">Nova anotação</h3><button class="link" type="button" id="mn-nova" hidden>+ Nova anotação</button></div>
+      <label>Título<input id="mn-titulo" placeholder="Ex.: Reunião com a Agrovital"></label>
+      <label>Descrição <span class="opc">(opcional)</span><textarea id="mn-desc" rows="3"></textarea></label>
+      <div class="dupla">
+        <label>Horário <span class="opc">(opcional)</span><input id="mn-hora" type="time"></label>
+        <label class="check" style="align-self:end;padding-bottom:10px"><input type="checkbox" id="mn-comp">Compartilhar com a equipe</label>
+      </div>
+      <p id="mn-erro" class="erro-txt" role="alert"></p>
+      <div class="acoes">
+        <button type="button" class="btn perigo" id="mn-excluir" hidden>Excluir</button>
+        <button type="submit" class="btn primario" id="mn-salvar">Adicionar anotação</button>
+      </div>
+    </form>
+  </div>
+</dialog>
+
+<dialog id="modal-verif" class="modal" aria-labelledby="mv-titulo">
+  <form id="form-verif" novalidate>
+    <h2 id="mv-titulo">Nova verificação em massa</h2>
+    <label>Nome da verificação<input id="mv-nome" placeholder="Ex.: Conferir orçamento das campanhas de novembro"></label>
+    <label>Descrição <span class="opc">(opcional)</span><textarea id="mv-desc" rows="3" placeholder="O que precisa ser verificado em cada conta"></textarea></label>
+    <p class="meta" id="mv-ajuda">Todos os clientes ativos entram na lista assim que a verificação é criada.</p>
+    <p id="mv-erro" class="erro-txt" role="alert"></p>
+    <div class="acoes">
+      <button type="button" class="btn perigo" id="mv-excluir" hidden>Excluir</button>
+      <button type="button" class="btn" id="mv-cancelar">Cancelar</button>
+      <button type="submit" class="btn primario" id="mv-salvar">Criar verificação</button>
+    </div>
+  </form>
+</dialog>
+
 <dialog id="modal-listing" class="modal" aria-labelledby="ml-titulo">
   <form id="form-novo-listing" novalidate>
     <h2 id="ml-titulo">Novo listing</h2>
@@ -1092,7 +1222,7 @@ const fmtDataHora = ts => new Date(ts).toLocaleString('pt-BR', { day:'2-digit', 
 const iniciais = nome => (nome || '?').trim().split(/\s+/).slice(0,2).map(p => p[0]).join('').toUpperCase();
 
 let sb;
-const state = { eu:null, colaboradores:[], clientes:[], problemas:[], chamados:[], filtro:'todos', busca:'', filtroCham:'pendentes', buscaCham:'', view:'clientes', aberto:null, problemaAberto:null, statusEscolhido:null, metricas:[], importacao:null, adsCliente:null, adsBusca:'', adsMostrarSaiu:false, adsFiltro:'todos', adsTipo:'alteracao', adsSituacao:new Map(), adsRegistros:[], editandoReg:null, listings:[], listingEventos:[], config:new Map(), filtroList:'abertos', buscaList:'', listingAberto:null, dev:null, verComo:null, dashEscopo:'minhas', adsDia:null, adsMes:hoje().slice(0,7), selFiltro:'ativos', selBusca:'', promocoes:[], eventos:[], eventoClientes:[], eventoSel:null, fPromo:'andamento', buscaPromo:'', promoEditando:null, promoTipo:null, fEv:'todas', buscaEv:'', eventoEditando:null, chamadoAberto:null, sadsFiltro:'todos', dashMes:hoje().slice(0,7), dashDia:null, dashIds:null, dashCalCli:null, sadsBusca:'', sadsSaiu:false, fProb:'abertos', buscaProb:'', gravProb:'' };
+const state = { eu:null, colaboradores:[], clientes:[], problemas:[], chamados:[], filtro:'todos', busca:'', filtroCham:'pendentes', buscaCham:'', view:'clientes', aberto:null, problemaAberto:null, statusEscolhido:null, metricas:[], importacao:null, adsCliente:null, adsBusca:'', adsMostrarSaiu:false, adsFiltro:'todos', adsTipo:'alteracao', adsSituacao:new Map(), adsRegistros:[], editandoReg:null, listings:[], listingEventos:[], config:new Map(), filtroList:'abertos', buscaList:'', listingAberto:null, dev:null, verComo:null, dashEscopo:'minhas', adsDia:null, adsMes:hoje().slice(0,7), selFiltro:'ativos', selBusca:'', promocoes:[], eventos:[], eventoClientes:[], eventoSel:null, fPromo:'andamento', buscaPromo:'', promoEditando:null, promoTipo:null, fEv:'todas', buscaEv:'', eventoEditando:null, chamadoAberto:null, sadsFiltro:'todos', dashMes:hoje().slice(0,7), dashDia:null, dashIds:null, dashCalCli:null, notas:[], notaMes:hoje().slice(0,7), notaDia:null, notaEditando:null, otimPrefs:new Map(), otimBusca:'', otimSaiu:false, otimFiltro:'todos', verificacoes:[], verifClientes:[], verifSel:null, verifFiltro:'pendentes', verifBusca:'', verifEditando:null, sadsBusca:'', sadsSaiu:false, fProb:'abertos', buscaProb:'', gravProb:'' };
 const colab = id => state.colaboradores.find(c => c.id === id);
 const souHead = () => state.eu?.funcao === 'head';
 
@@ -1226,6 +1356,8 @@ async function carregarDados(){
     state.config = new Map(cfg.map(x => [x.chave, x]));
     const [prm, evt, evc] = await Promise.all([buscarTodos('promocoes'), buscarTodos('eventos'), buscarTodos('evento_clientes')]);
     state.promocoes = prm; state.eventos = evt; state.eventoClientes = evc;
+    const [nts, prf, vrf, vrc] = await Promise.all([buscarTodos('anotacoes'), buscarTodos('listing_preferencias', 'cliente_id'), buscarTodos('verificacoes'), buscarTodos('verificacao_clientes')]);
+    state.notas = nts; state.otimPrefs = new Map(prf.map(x => [x.cliente_id, x])); state.verificacoes = vrf; state.verifClientes = vrc;
     state.metricas = met;
     state.adsSituacao = new Map(sit.map(s => [s.cliente_id, s]));
     state.adsRegistros = regs;
@@ -1249,15 +1381,18 @@ function irPara(view){
   if (state.view === 'ads' && view !== 'ads' && !podeSairDaSituacao()) return;
   state.view = view;
   sairEdicao();
-  const navView = view === 'eventos' ? 'promocoes' : view;
+  const navView = view === 'eventos' ? 'promocoes' : view === 'verificacoes' ? 'ads' : view;
   document.querySelectorAll('.nav-item').forEach(b => { if (b.dataset.view === navView) b.setAttribute('aria-current','page'); else b.removeAttribute('aria-current'); });
-  ['dashboard','clientes','ads','listing','promocoes','eventos','problemas','chamados','equipe','config'].forEach(v => $('#view-' + v).hidden = v !== view);
+  ['dashboard','anotacoes','clientes','ads','verificacoes','listing','otimizacao','promocoes','eventos','problemas','chamados','equipe','config'].forEach(v => $('#view-' + v).hidden = v !== view);
   if (view === 'dashboard') renderDashboard();
   else if (view === 'clientes') renderClientes();
   else if (view === 'ads') renderAds();
   else if (view === 'listing') renderListings();
   else if (view === 'chamados') renderChamados();
   else if (view === 'problemas') renderProblemas();
+  else if (view === 'anotacoes') renderAnotacoes();
+  else if (view === 'otimizacao') renderOtimizacao();
+  else if (view === 'verificacoes'){ renderVerificacoes(); recarregarVerifClientes().then(() => { if (state.view === 'verificacoes') renderVerificacoes(); }); }
   else if (view === 'config') renderConfig();
   else if (view === 'promocoes') renderPromocoes();
   else if (view === 'eventos'){ renderEventos(); recarregarEventoClientes().then(() => { if (state.view === 'eventos') renderEventos(); }); }
@@ -1298,7 +1433,7 @@ async function recarregar(){
 }
 $('#btn-recarregar').addEventListener('click', recarregar);
 
-function atualizarFundo(){ if (state.view === 'dashboard') renderDashboard(); else if (state.view === 'clientes') renderClientes(); else if (state.view === 'ads') renderAds(); else if (state.view === 'listing') renderListings(); else if (state.view === 'promocoes') renderPromocoes(); else if (state.view === 'eventos') renderEventos(); else if (state.view === 'chamados') renderChamados(); else if (state.view === 'problemas') renderProblemas(); }
+function atualizarFundo(){ if (state.view === 'dashboard') renderDashboard(); else if (state.view === 'clientes') renderClientes(); else if (state.view === 'ads') renderAds(); else if (state.view === 'listing') renderListings(); else if (state.view === 'promocoes') renderPromocoes(); else if (state.view === 'eventos') renderEventos(); else if (state.view === 'chamados') renderChamados(); else if (state.view === 'problemas') renderProblemas(); else if (state.view === 'anotacoes') renderAnotacoes(); else if (state.view === 'otimizacao') renderOtimizacao(); else if (state.view === 'verificacoes') renderVerificacoes(); }
 function guardarLocal(lista, item){ const i = lista.findIndex(x => x.id === item.id); if (i >= 0) lista[i] = item; else lista.unshift(item); }
 document.querySelectorAll('.nav-item').forEach(b => b.addEventListener('click', () => { if (b.dataset.arrastou){ delete b.dataset.arrastou; return; } irPara(b.dataset.view); }));
 
@@ -1602,6 +1737,8 @@ async function excluirCliente(){
   state.listingEventos = state.listingEventos.filter(e => !lsts.includes(e.listing_id));
   state.promocoes = state.promocoes.filter(p => p.cliente_id !== c.id);
   state.eventoClientes = state.eventoClientes.filter(x => x.cliente_id !== c.id);
+  state.verifClientes = state.verifClientes.filter(x => x.cliente_id !== c.id);
+  state.otimPrefs.delete(c.id);
   if (state.adsCliente === c.id) state.adsCliente = null;
   fecharDrawer(); renderClientes();
   toast('Cliente excluído');
@@ -3748,6 +3885,292 @@ function renderVisaoAds(){
     </button>`;
   }).join('') : `<p class="ajuda" style="padding:14px">Nenhum cliente com esse filtro.</p>`;
 }
+
+// ---------- anotações (agenda) ----------
+const hhmm = t => t ? String(t).slice(0, 5) : '';
+const ordemNota = (a, b) => (a.horario ? 0 : 1) - (b.horario ? 0 : 1) || hhmm(a.horario).localeCompare(hhmm(b.horario)) || a.titulo.localeCompare(b.titulo, 'pt-BR');
+$('#ag-ant').addEventListener('click', () => mudarMesNota(-1));
+$('#ag-prox').addEventListener('click', () => mudarMesNota(1));
+$('#ag-hoje').addEventListener('click', () => { state.notaMes = hoje().slice(0, 7); renderAnotacoes(); });
+function mudarMesNota(n){
+  const [a, m] = state.notaMes.split('-').map(Number);
+  const d = new Date(a, m - 1 + n, 1);
+  state.notaMes = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+  renderAnotacoes();
+}
+function renderAnotacoes(){
+  const [a, m] = state.notaMes.split('-').map(Number);
+  const dias = new Date(a, m, 0).getDate();
+  const vazios = (new Date(a, m - 1, 1).getDay() + 6) % 7;
+  const hj = hoje(), me = state.eu.id;
+  const nm = new Date(a, m - 1, 1).toLocaleDateString('pt-BR', { month:'long', year:'numeric' });
+  $('#ag-mes').textContent = nm.charAt(0).toUpperCase() + nm.slice(1);
+  const doMes = state.notas.filter(n => n.data.startsWith(state.notaMes));
+  const porDia = new Map();
+  doMes.forEach(n => { const d = +n.data.slice(8, 10); if (!porDia.has(d)) porDia.set(d, []); porDia.get(d).push(n); });
+  let html = ['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'].map(s => `<span class="ag-sem">${s}</span>`).join('');
+  html += '<span class="ag-dia fora"></span>'.repeat(vazios);
+  for (let d = 1; d <= dias; d++){
+    const iso = `${state.notaMes}-${String(d).padStart(2, '0')}`;
+    const ns = (porDia.get(d) || []).sort(ordemNota);
+    html += `<button type="button" class="ag-dia ${iso === hj ? 'hoje' : ''}" onclick="abrirDiaNota('${iso}')" aria-label="${fmtDiaLongo(iso)}${ns.length ? `, ${ns.length} ${ns.length === 1 ? 'anotação' : 'anotações'}` : ''}">
+      <span class="ag-n">${d}</span>
+      ${ns.slice(0, 3).map(n => `<span class="ag-nota ${n.autor !== me ? 'comp' : ''}">${n.horario ? `<b>${hhmm(n.horario)}</b> ` : ''}${esc(n.titulo)}</span>`).join('')}
+      ${ns.length > 3 ? `<span class="ag-mais">+${ns.length - 3}</span>` : ''}
+    </button>`;
+  }
+  const resto = (7 - ((vazios + dias) % 7)) % 7;
+  html += '<span class="ag-dia fora"></span>'.repeat(resto);
+  $('#agenda').innerHTML = html;
+  const minhas = doMes.filter(n => n.autor === me).length;
+  $('#resumo-notas').textContent = doMes.length
+    ? `${doMes.length} ${doMes.length === 1 ? 'anotação' : 'anotações'} neste mês${doMes.length - minhas ? `, ${doMes.length - minhas} da equipe` : ''}. Clique num dia para anotar.`
+    : 'Nenhuma anotação neste mês. Clique num dia para anotar.';
+}
+
+function abrirDiaNota(iso, notaId = null){
+  state.notaDia = iso;
+  state.notaEditando = notaId;
+  const me = state.eu.id;
+  const doDia = state.notas.filter(n => n.data === iso).sort(ordemNota);
+  const n = notaId ? state.notas.find(x => x.id === notaId) : null;
+  $('#mn-titulo-dia').textContent = fmtDiaLongo(iso);
+  $('#mn-lista').innerHTML = doDia.length ? doDia.map(x => {
+    const minha = x.autor === me, quem = colab(x.autor);
+    const corpo = `<span class="nota-hora">${x.horario ? hhmm(x.horario) : 'Dia todo'}</span>
+      <span class="nota-txt"><strong>${esc(x.titulo)}</strong>${x.descricao ? `<small>${esc(x.descricao)}</small>` : ''}
+      ${!minha ? `<small class="nota-de">De ${esc(quem?.nome || 'alguém da equipe')}</small>` : x.compartilhada ? '<small class="nota-de">Compartilhada com a equipe</small>' : ''}</span>`;
+    return minha
+      ? `<button type="button" class="nota-item ${x.id === notaId ? 'sel' : ''}" onclick="abrirDiaNota('${iso}','${x.id}')">${corpo}</button>`
+      : `<div class="nota-item outra">${corpo}</div>`;
+  }).join('') : '<p class="ajuda">Nenhuma anotação neste dia ainda.</p>';
+  $('#mn-form-titulo').textContent = n ? 'Editar anotação' : 'Nova anotação';
+  $('#mn-titulo').value = n?.titulo || '';
+  $('#mn-desc').value = n?.descricao || '';
+  $('#mn-hora').value = hhmm(n?.horario);
+  $('#mn-comp').checked = !!n?.compartilhada;
+  $('#mn-erro').textContent = '';
+  $('#mn-excluir').hidden = !n;
+  $('#mn-nova').hidden = !n;
+  $('#mn-salvar').textContent = n ? 'Salvar anotação' : 'Adicionar anotação';
+  if (!$('#modal-nota').open) $('#modal-nota').showModal();
+  $('#mn-titulo').focus();
+}
+$('#mn-fechar').addEventListener('click', () => $('#modal-nota').close());
+$('#modal-nota').addEventListener('click', e => { if (e.target === e.currentTarget) e.currentTarget.close(); });
+$('#mn-nova').addEventListener('click', () => abrirDiaNota(state.notaDia));
+$('#form-nota').addEventListener('submit', async e => {
+  e.preventDefault();
+  const erro = $('#mn-erro'); erro.textContent = '';
+  const titulo = $('#mn-titulo').value.trim();
+  if (!titulo){ erro.textContent = 'Dê um título para a anotação.'; $('#mn-titulo').focus(); return; }
+  const dados = { titulo, descricao:$('#mn-desc').value.trim() || null, horario:$('#mn-hora').value || null, compartilhada:$('#mn-comp').checked };
+  const btn = $('#mn-salvar'); btn.disabled = true;
+  const editando = state.notaEditando;
+  const res = editando
+    ? await sb.from('anotacoes').update(dados).eq('id', editando).select().single()
+    : await sb.from('anotacoes').insert({ ...dados, data:state.notaDia }).select().single();
+  btn.disabled = false;
+  if (res.error){ erro.textContent = 'Não foi possível salvar: ' + res.error.message; return; }
+  guardarLocal(state.notas, res.data);
+  renderAnotacoes();
+  abrirDiaNota(state.notaDia);
+  toast(editando ? 'Anotação salva' : 'Anotação adicionada');
+});
+$('#mn-excluir').addEventListener('click', async () => {
+  if (!confirm('Excluir esta anotação?')) return;
+  const { error } = await sb.from('anotacoes').delete().eq('id', state.notaEditando);
+  if (error){ $('#mn-erro').textContent = 'Não foi possível excluir: ' + error.message; return; }
+  state.notas = state.notas.filter(n => n.id !== state.notaEditando);
+  renderAnotacoes(); abrirDiaNota(state.notaDia);
+  toast('Anotação excluída');
+});
+
+// ---------- otimização de listing: preferências por cliente ----------
+$('#busca-otim').addEventListener('input', e => { state.otimBusca = e.target.value; renderOtimizacao(); });
+$('#otim-saiu').addEventListener('change', e => { state.otimSaiu = e.target.checked; renderOtimizacao(); });
+document.querySelectorAll('[data-fotim]').forEach(b => b.addEventListener('click', () => { state.otimFiltro = b.dataset.fotim; renderOtimizacao(); }));
+function renderOtimizacao(){
+  const base = state.clientes.filter(c => state.otimSaiu || c.status !== 'saiu');
+  const tem = c => !!state.otimPrefs.get(c.id)?.texto;
+  const cont = { todos:base.length, com:base.filter(tem).length };
+  cont.sem = cont.todos - cont.com;
+  document.querySelectorAll('[data-fotim]').forEach(b => { b.querySelector('.n').textContent = cont[b.dataset.fotim]; b.setAttribute('aria-pressed', String(b.dataset.fotim === state.otimFiltro)); });
+  const q = norm(state.otimBusca), f = state.otimFiltro;
+  const lista = base
+    .filter(c => f === 'todos' || (f === 'com' ? tem(c) : !tem(c)))
+    .filter(c => !q || norm(`${c.nome} ${c.loja || ''} ${state.otimPrefs.get(c.id)?.texto || ''}`).includes(q))
+    .sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR'));
+  $('#otim-grade').innerHTML = lista.length ? lista.map(c => {
+    const pr = state.otimPrefs.get(c.id), quem = pr && colab(pr.atualizado_por);
+    return `<button type="button" class="otim-card ${pr?.texto ? '' : 'vazio-card'}" data-status="${c.status}" onclick="abrirOtim('${c.id}')">
+      <span class="oc-topo"><strong>${esc(c.nome)}</strong>${c.status !== 'ativo' ? `<span class="pill" data-status="${c.status}">${STATUS[c.status]}</span>` : ''}</span>
+      <small class="meta">${esc(c.loja || 'Loja não informada')}</small>
+      <span class="oc-texto">${pr?.texto ? esc(pr.texto) : 'Nenhuma preferência anotada ainda.'}</span>
+      ${pr?.texto ? `<small class="meta">Atualizado em ${fmtDia(pr.atualizado_em)}${quem ? ' por ' + esc(quem.nome) : ''}</small>` : ''}
+    </button>`;
+  }).join('') : `<div class="painel"><div class="vazio"><p>Nenhum cliente encontrado.</p></div></div>`;
+}
+function abrirOtim(cid){
+  const c = state.clientes.find(x => x.id === cid);
+  if (!c) return;
+  const pr = state.otimPrefs.get(cid), quem = pr && colab(pr.atualizado_por);
+  state.aberto = null; state.problemaAberto = null; state.listingAberto = null; state.chamadoAberto = null;
+  const d = $('#drawer');
+  delete d.dataset.grav; delete d.dataset.etapa; delete d.dataset.estado;
+  d.dataset.status = c.status;
+  const qtdList = state.listings.filter(l => l.cliente_id === cid).length;
+  d.innerHTML = `
+    <header class="d-topo">
+      <div><p>Preferências de otimização de listing</p><h2 id="d-titulo">${esc(c.nome)}</h2></div>
+      <button class="fechar" type="button" data-fechar aria-label="Fechar painel">×</button>
+    </header>
+    <div class="d-corpo">
+      <section class="bloco">
+        <p class="ajuda">Anote o que este cliente prefere nas otimizações: tom dos títulos, palavras que não podem faltar ou que devem ser evitadas, padrão de imagens, o que ele precisa aprovar antes e qualquer outra observação.</p>
+        <textarea id="otim-texto" rows="12" aria-label="Preferências de ${esc(c.nome)}" placeholder="Ex.: Títulos sem caixa alta. Sempre citar a marca no início. Não usar a palavra 'barato'. Imagens com fundo branco e uma foto de uso.">${esc(pr?.texto)}</textarea>
+        <p class="meta">${pr ? `Atualizado em ${fmtDataHora(pr.atualizado_em)}${quem ? ' por ' + esc(quem.nome) : ''}` : 'Ainda sem preferências anotadas.'}${qtdList ? ` Este cliente tem ${qtdList} ${qtdList === 1 ? 'solicitação' : 'solicitações'} de listing.` : ''}</p>
+        <p id="otim-erro" class="erro-txt" role="alert"></p>
+        <div class="acoes"><button class="btn primario" type="button" id="otim-salvar">Salvar preferências</button></div>
+      </section>
+    </div>`;
+  d.querySelectorAll('[data-fechar]').forEach(b => b.addEventListener('click', fecharDrawer));
+  $('#otim-salvar').addEventListener('click', async () => {
+    const btn = $('#otim-salvar'); btn.disabled = true;
+    const { data, error } = await sb.from('listing_preferencias').upsert({ cliente_id:cid, texto:$('#otim-texto').value.trim() || null }, { onConflict:'cliente_id' }).select().single();
+    btn.disabled = false;
+    if (error){ $('#otim-erro').textContent = 'Não foi possível salvar: ' + error.message; return; }
+    state.otimPrefs.set(cid, data);
+    abrirOtim(cid);
+    if (state.view === 'otimizacao') renderOtimizacao();
+    toast('Preferências salvas');
+  });
+  exibirDrawer();
+  setTimeout(() => $('#otim-texto')?.focus(), 60);
+}
+
+// ---------- verificação em massa (aba Ads) ----------
+$('#btn-verif-ads').addEventListener('click', () => irPara('verificacoes'));
+$('#btn-voltar-ads').addEventListener('click', () => irPara('ads'));
+$('#btn-nova-verif').addEventListener('click', () => abrirModalVerif(null));
+async function recarregarVerifClientes(){ try { state.verifClientes = await buscarTodos('verificacao_clientes'); } catch {} }
+
+function renderVerificacoes(){
+  const el = $('#verif-conteudo');
+  const progresso = v => { const it = state.verifClientes.filter(x => x.verificacao_id === v.id); return { total:it.length, feitos:it.filter(x => x.concluido).length, it }; };
+  const vs = [...state.verificacoes].map(v => ({ v, ...progresso(v) }))
+    .sort((a, b) => ((a.total && a.feitos === a.total) - (b.total && b.feitos === b.total)) || new Date(b.v.criado_em) - new Date(a.v.criado_em));
+  if (!vs.length){
+    el.innerHTML = `<div class="painel"><div class="vazio"><p>Nenhuma verificação criada ainda. Ao criar uma, todos os clientes ativos já entram na lista.</p><button class="btn primario" type="button" onclick="abrirModalVerif(null)">Criar verificação</button></div></div>`;
+    return;
+  }
+  if (!vs.some(o => o.v.id === state.verifSel)) state.verifSel = vs[0].v.id;
+  const sel = vs.find(o => o.v.id === state.verifSel);
+  const { v, total, feitos, it } = sel;
+  const pct = total ? Math.round(feitos / total * 100) : 0;
+  const f = state.verifFiltro, q = norm(state.verifBusca);
+  const linhas = it.map(x => ({ x, c:state.clientes.find(c => c.id === x.cliente_id) })).filter(o => o.c)
+    .filter(o => f === 'todos' || (f === 'pendentes' ? !o.x.concluido : o.x.concluido))
+    .filter(o => !q || norm(o.c.nome).includes(q))
+    .sort((a, b) => a.x.concluido - b.x.concluido || a.c.nome.localeCompare(b.c.nome, 'pt-BR'));
+  const fora = state.clientes.filter(c => c.status !== 'saiu' && !it.some(x => x.cliente_id === c.id)).sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR'));
+  const quem = colab(v.criado_por);
+  el.innerHTML = `
+    <div class="ev-chips" aria-label="Verificações">
+      ${vs.map(o => `<button type="button" class="ev-chip" aria-pressed="${o.v.id === v.id}" onclick="state.verifSel='${o.v.id}';renderVerificacoes()"><strong>${esc(o.v.nome)}</strong><small>${o.feitos} de ${o.total} ${o.total && o.feitos === o.total ? ', concluída' : ''}</small></button>`).join('')}
+    </div>
+    <div class="painel" style="margin-bottom:16px">
+      <div class="ev-cab">
+        <div><h2>${esc(v.nome)}</h2><p class="meta">Criada em ${fmtDia(v.criado_em)}${quem ? ' por ' + esc(quem.nome) : ''}${v.descricao ? `. ${esc(v.descricao)}` : ''}</p></div>
+        <div class="dash-ctrl">
+          ${fora.length ? `<select id="verif-add" aria-label="Adicionar cliente"><option value="">Adicionar cliente</option>${fora.map(c => `<option value="${c.id}">${esc(c.nome)}</option>`).join('')}</select>` : ''}
+          <button class="btn" type="button" onclick="abrirModalVerif('${v.id}')">Editar</button>
+        </div>
+      </div>
+      <div class="verif-prog"><strong>${feitos} de ${total}</strong> clientes verificados (${pct}%)</div>
+      <div class="barra" data-etapa="concluido" role="progressbar" aria-label="Progresso da verificação" aria-valuemin="0" aria-valuemax="${total}" aria-valuenow="${feitos}"><i style="width:${pct}%"></i></div>
+    </div>
+    <div class="ferramentas">
+      <button class="filtro" type="button" data-fverif="todos" data-estado="todos" aria-pressed="${f === 'todos'}">Todos <span class="n">${total}</span></button>
+      <button class="filtro" type="button" data-fverif="pendentes" data-estado="a_abrir" aria-pressed="${f === 'pendentes'}"><span class="ponto"></span>Pendentes <span class="n">${total - feitos}</span></button>
+      <button class="filtro" type="button" data-fverif="feitos" data-estado="concluido" aria-pressed="${f === 'feitos'}"><span class="ponto"></span>Concluídos <span class="n">${feitos}</span></button>
+      <input class="busca" id="busca-verif" type="search" placeholder="Buscar cliente" aria-label="Buscar cliente" value="${esc(state.verifBusca)}">
+    </div>
+    <div class="ev-lista">
+      ${linhas.length ? linhas.map(({ x, c }) => {
+        const por = colab(x.concluido_por);
+        return `<label class="ver-linha ${x.concluido ? 'feito' : ''}">
+          <input type="checkbox" ${x.concluido ? 'checked' : ''} onchange="marcarVerif('${x.id}', this)">
+          <span class="ver-txt"><strong>${esc(c.nome)}</strong><small>${x.concluido ? `Concluído${x.concluido_em ? ' em ' + fmtDataHora(x.concluido_em) : ''}${por ? ' por ' + esc(por.nome) : ''}` : 'Pendente'}</small></span>
+          <button class="link" type="button" onclick="event.preventDefault();irParaAds('${c.id}')">Abrir em Ads</button>
+        </label>`;
+      }).join('') : `<div class="vazio"><p>Nenhum cliente com esse filtro.</p></div>`}
+    </div>`;
+  el.querySelectorAll('[data-fverif]').forEach(b => b.addEventListener('click', () => { state.verifFiltro = b.dataset.fverif; renderVerificacoes(); }));
+  $('#busca-verif').addEventListener('input', e => { state.verifBusca = e.target.value; renderVerificacoes(); const nb = $('#busca-verif'); nb.focus(); nb.setSelectionRange(nb.value.length, nb.value.length); });
+  $('#verif-add')?.addEventListener('change', async e => {
+    if (!e.target.value) return;
+    const { data, error } = await sb.from('verificacao_clientes').insert({ verificacao_id:v.id, cliente_id:e.target.value }).select().single();
+    if (error){ toast('Não foi possível adicionar: ' + error.message, true); return; }
+    state.verifClientes.push(data); renderVerificacoes(); toast('Cliente adicionado à verificação');
+  });
+}
+async function marcarVerif(id, el){
+  const x = state.verifClientes.find(i => i.id === id);
+  const ant = x.concluido;
+  el.disabled = true;
+  const { data, error } = await sb.from('verificacao_clientes').update({ concluido:el.checked }).eq('id', id).select().single();
+  if (error){ el.checked = ant; el.disabled = false; toast('Não foi possível marcar: ' + error.message, true); return; }
+  guardarLocal(state.verifClientes, data);
+  renderVerificacoes();
+  const it = state.verifClientes.filter(i => i.verificacao_id === data.verificacao_id);
+  if (data.concluido && it.every(i => i.concluido)) toast('Verificação concluída: todos os clientes foram verificados');
+}
+
+$('#mv-cancelar').addEventListener('click', () => $('#modal-verif').close());
+$('#modal-verif').addEventListener('click', e => { if (e.target === e.currentTarget) e.currentTarget.close(); });
+function abrirModalVerif(id){
+  const v = id ? state.verificacoes.find(x => x.id === id) : null;
+  state.verifEditando = v ? v.id : null;
+  $('#mv-nome').value = v?.nome || '';
+  $('#mv-desc').value = v?.descricao || '';
+  $('#mv-erro').textContent = '';
+  $('#mv-titulo').textContent = v ? 'Editar verificação' : 'Nova verificação em massa';
+  $('#mv-salvar').textContent = v ? 'Salvar' : 'Criar verificação';
+  $('#mv-ajuda').hidden = !!v;
+  $('#mv-excluir').hidden = !v || !(souHead() || v.criado_por === state.eu.id);
+  $('#modal-verif').showModal();
+  $('#mv-nome').focus();
+}
+$('#form-verif').addEventListener('submit', async e => {
+  e.preventDefault();
+  const erro = $('#mv-erro'); erro.textContent = '';
+  const nome = $('#mv-nome').value.trim();
+  if (!nome){ erro.textContent = 'Dê um nome para a verificação.'; return; }
+  const dados = { nome, descricao:$('#mv-desc').value.trim() || null };
+  const btn = $('#mv-salvar'); btn.disabled = true;
+  const editando = state.verifEditando;
+  const res = editando
+    ? await sb.from('verificacoes').update(dados).eq('id', editando).select().single()
+    : await sb.from('verificacoes').insert(dados).select().single();
+  btn.disabled = false;
+  if (res.error){ erro.textContent = 'Não foi possível salvar: ' + res.error.message; return; }
+  guardarLocal(state.verificacoes, res.data);
+  if (!editando){ await recarregarVerifClientes(); state.verifSel = res.data.id; state.verifFiltro = 'pendentes'; }
+  $('#modal-verif').close();
+  renderVerificacoes();
+  if (!editando){ const n = state.verifClientes.filter(x => x.verificacao_id === res.data.id).length; toast(`Verificação criada com ${n} ${n === 1 ? 'cliente ativo' : 'clientes ativos'}`); }
+  else toast('Verificação salva');
+});
+$('#mv-excluir').addEventListener('click', async () => {
+  const v = state.verificacoes.find(x => x.id === state.verifEditando);
+  if (!v || !confirm(`Excluir a verificação "${v.nome}"?`)) return;
+  const { error } = await sb.from('verificacoes').delete().eq('id', v.id);
+  if (error){ $('#mv-erro').textContent = 'Não foi possível excluir: ' + error.message; return; }
+  state.verificacoes = state.verificacoes.filter(x => x.id !== v.id);
+  state.verifClientes = state.verifClientes.filter(x => x.verificacao_id !== v.id);
+  $('#modal-verif').close(); renderVerificacoes(); toast('Verificação excluída');
+});
 
 // ---------- aba de chamados ----------
 const tituloChamado = ch => ch.assunto || `Chamado de ${fmtData(ch.data_chamado)}`;
